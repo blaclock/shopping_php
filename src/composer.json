@@ -11,5 +11,8 @@
         "phpmd": "./vendor/bin/phpmd . text phpmd.xml --suffixes php --exclude vendor",
         "phpstan": "./vendor/bin/phpstan analyse -c phpstan.neon",
         "phpunit": "./vendor/bin/phpunit"
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
     }
 }
