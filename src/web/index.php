@@ -1,7 +1,7 @@
 <?php
 
-require '../Bootstrap.php';
-require '../Application.php';
+require '../App/Bootstrap.php';
+require '../App/Application.php';
 
 $app = new Application();
 $app->run();
