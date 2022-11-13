@@ -1,3 +1,4 @@
 docker/db/mysql_data
 # src/vendor
 # src/.env
+src/App/logs
