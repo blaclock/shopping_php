@@ -26,7 +26,8 @@ class Application
     {
         // ルーティングのパターンを登録
         return [
-            '/' => ['controller' => 'Product', 'action' => 'index']
+            '/' => ['controller' => 'Product', 'action' => 'index'],
+            '/list' => ['controller' => 'Product', 'action' => 'list'],
         ];
     }
 
