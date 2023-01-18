@@ -1,0 +1,83 @@
+<?php
+
+namespace App\controllers;
+
+use App\controllers\Controller;
+use HttpNotFoundException;
+use Validation;
+
+use function PHPUnit\Framework\throwException;
+
+class OrderController extends Controller
+{
+    public function index()
+    {
+        if (\App\models\Auth::check()) {
+            $customer_id = $_SESSION['customer']['id'];
+            $order = $this->model->get('Order');
+            // 注文履歴データを取得
+            $orders = $order->getOrderData($customer_id);
+            $this->view(
+                'orders.index',
+                [
+                    "orders" => $orders
+                ]
+            );
+        } else {
+            header('Location: ' . '/login');
+        }
+    }
+
+    public function show()
+    {
+    }
+
+    public function create()
+    {
+    }
+
+    public function store()
+    {
+        if (!$this->request->isPost()) {
+            throw new HttpNotFoundException();
+        }
+
+        if (\App\models\Auth::check()) {
+            if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
+                unset($_SESSION['token']);
+
+                $customer_id = $_SESSION['customer']['id'];
+                $product_id = $_POST['product_id'];
+                $quantity = $_POST['quantity'];
+                $cart_id = $_POST['cart_id'];
+
+                $order = $this->model->get('Order');
+                // 購入データを格納
+                $order->addOrder($customer_id, $product_id, $quantity);
+                // カートから購入され商品を削除する
+                $this->model->get('Cart')->orderedCart($cart_id);
+                header('Location: ' . '/mypage/orders');
+            } else {
+                header('Location: ' . '/cart');
+            }
+        } else {
+            header('Location: ' . '/login');
+        }
+    }
+
+    public function edit()
+    {
+    }
+
+    public function update()
+    {
+    }
+
+    public function destroy()
+    {
+        $order_id = $_GET['order_id'];
+        $order = $this->model->get('Order');
+        $order->deleteOrder($order_id);
+        header('Location: ' . '/order');
+    }
+}

@@ -1,20 +1,10 @@
 <?php
-/*
- * ファイルパス：/Applications/MAMP/htdocs/DT/shopping\lib\PDODatabase.class.php
- * ファイル名：PDODatabase.class.php (商品に関するプログラムのクラスファイル、Model)
- * PDO(PHP Data Objects)：PHP標準(5.1.0以降)のDB接続クラス
- * おすすめ記事：http://qiita.com/7968/items/6f089fec8dde676abb5b
- */
 
+namespace App\models;
 
 class PDODatabase
 {
     private $dbh = null;
-    private $db_host = '';
-    private $db_user = '';
-    private $db_pass = '';
-    private $db_name = '';
-    private $db_type = '';
     private $order = '';
     private $limit = '';
     private $offset = '';
@@ -23,15 +13,16 @@ class PDODatabase
     public function __construct($db_host, $db_user, $db_pass, $db_name, $db_type)
     {
         $this->dbh = $this->connectDB($db_host, $db_user, $db_pass, $db_name, $db_type);
-        $this->db_host = $db_host;
-        $this->db_user = $db_user;
-        $this->db_pass = $db_pass;
-        $this->db_name = $db_name;
         // SQL関連
         $this->order = '';
         $this->limit = '';
         $this->offset = '';
         $this->groupby = '';
+    }
+
+    public function __destruct()
+    {
+        $this->dbh = null;
     }
 
     private function connectDB($db_host, $db_user, $db_pass, $db_name, $db_type)
@@ -212,6 +203,20 @@ class PDODatabase
 
         $stmt = $this->dbh->prepare($sql);
         $res = $stmt->execute($updateData);
+
+        if ($res === false) {
+            $this->catchError($stmt->errorInfo());
+        }
+        return $res;
+    }
+
+    public function delete($table, $where = "", $arrWhereVal = [])
+    {
+        $where = $sql = ' DELETE FROM ' . $table . ' WHERE ' . $where;
+
+
+        $stmt = $this->dbh->prepare($sql);
+        $res = $stmt->execute($arrWhereVal);
 
         if ($res === false) {
             $this->catchError($stmt->errorInfo());

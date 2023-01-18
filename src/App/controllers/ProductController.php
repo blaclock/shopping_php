@@ -1,55 +1,215 @@
 <?php
 
+namespace App\controllers;
+
+use App\controllers\Controller;
+use HttpNotFoundException;
+use Validation;
+
 class ProductController extends Controller
 {
-    public function run($action)
-    {
-        $this->$action();
-    }
-
     public function index()
     {
-        echo 'ProductController<br>';
-        // include $_ENV['TMP_DIR'] . 'list.php';
-        // include './../../resources/views/list.php';
-        // include 'test.php'; 開けた
-        include '../resources/views/test.php';
-        // include '/Users/kuroiwatomohiro/Documents/code/shopping/src/resources/views/test.php';
-        // include $_ENV['TMP_DIR'] . 'test.php';
+        // Productモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+        // カテゴリー一覧を取得
+        $categories = $product->getCategoryList();
+        // 商品一覧を取得
+        list($products, $paginationInfo) = $product->getProductList();
+        // var_dump($paginationInfo);
+
+        $this->view(
+            'products.index',
+            [
+                "products" => $products,
+                "categories" => $categories,
+                "pagination" => $paginationInfo
+            ]
+        );
     }
 
-    public function list()
+    public function search()
     {
-        $db = new PDODatabase(
-            $_ENV['DB_HOST'],
-            $_ENV['DB_USER'],
-            $_ENV['DB_PASS'],
-            $_ENV['DB_NAME'],
-            $_ENV['DB_TYPE']
-        );
-        // $ses = new Session($db);
-        $itm = new Item($db);
+        // Productモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+        // カテゴリー一覧を取得
+        $categories = $product->getCategoryList();
+        // 検索ワードに基づいて商品を取得
+        list($products, $paginationInfo) = $product->searchProduct($_GET['q']);
+        // var_dump($paginationInfo);
 
-        // SessionKeyを見て、DBへの登録状態をチェックする
-        // $ses->checkSession();
-        $ctg_id =
-            (isset($_GET['ctg_id']) === true && preg_match('/^[0-9]+$/', $_GET['ctg_id']) === 1)
-            ? $_GET['ctg_id']
-            : '';
-
-        // カテゴリーリスト(一覧)を取得する
-        $cateArr = $itm->getCategoryList();
-
-        // 商品リストを取得する
-        if (isset($_POST['send'])) {
-            $dataArr = $itm->searchWord($_POST['search']);
+        if ($product !== false) {
+            $this->view(
+                'products.index',
+                [
+                    "products" => $products,
+                    "categories" => $categories,
+                    "pagination" => $paginationInfo
+                ]
+            );
         } else {
-            $dataArr = $itm->getItemList($ctg_id);
+            $this->view(
+                'products.index',
+                [
+                    "products" => $products,
+                    "categories" => $categories,
+                    "pagination" => $paginationInfo
+                ]
+            );
+        }
+    }
+
+    public function show()
+    {
+        // Productモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+
+        // 商品情報を取得する
+        $id = $_GET['id'];
+        $productData = $product->getProductDetailData($id);
+
+        // レビューを取得する
+        $reviews = $this->model->get('Review')->getReviews($id);
+
+        if (\App\models\Auth::check()) {
+            $favorites = $this->model->get('Product_Favorite')->getFavorites($_SESSION['customer']['id']);
+        } else {
+            $favorites = [];
         }
 
-        $this->view('product.product', [
-            "variable1" => "Hello",
-            "variable2" => "World"
-        ]);
+        $token = uniqid('', true);
+        $_SESSION['token'] = $token;
+
+        $this->view(
+            'products.show',
+            [
+                "product" => $productData,
+                "reviews" => $reviews,
+                "favorites" => $favorites,
+                "token" => $token
+            ]
+        );
+    }
+
+    public function create()
+    {
+        // Productモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+        // カテゴリー一覧を取得
+        $categories = $product->getCategoryList();
+
+        $this->view(
+            'products.create',
+            [
+                'categories' => $categories,
+                'productData' => ['category' => []]
+            ]
+        );
+    }
+
+    public function confirm()
+    {
+        if (!$this->request->isPost()) {
+            throw new HttpNotFoundException();
+        }
+
+        // Productモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+        // カテゴリー一覧を取得
+        $categories = $product->getCategoryList();
+
+        $mode = $_POST['send'];
+        switch ($mode) {
+            case \App\consts\CommonConst::REGISTER_CONFIRM:
+                // 登録確認が押された場合
+                // Formで送信された値をチェックする
+                $validation = new Validation();
+                list($isError, $errMessage) = $validation->validateForm([
+                    'name' => 'required',
+                    'price' => 'required|num',
+                    'category' => 'radio',
+                    'image' => 'image',
+                    'detail' => 'required'
+                ]);
+
+                // var_dump($errMessage);
+                // var_dump($isError);
+                // var_dump($_POST);
+                // var_dump($_FILES);
+
+                if ($isError) {
+                    // var_dump($errMessage);
+                    $this->view(
+                        'products.create',
+                        [
+                            'productData' => $validation->getFormData(),
+                            'categories' => $categories,
+                            'errMessage' => $errMessage
+                        ]
+                    );
+                } else {
+                    //二重登録を防止する
+                    //session_start();
+                    $token = uniqid('', true);
+                    $_SESSION['token'] = $token;
+
+                    $this->view(
+                        'products.confirm',
+                        [
+                            'productData' => $validation->getFormData(),
+                            'token' => $token
+                        ]
+                    );
+                }
+
+                break;
+            case \App\consts\CommonConst::REGISTER_BACK:
+                // 戻るを押された場合
+                $this->view(
+                    'products.create',
+                    [
+                        'productData' => $_POST,
+                        'categories' => $categories
+                    ]
+                );
+                break;
+            case \App\consts\CommonConst::REGISTER_COMPLETE:
+                // 登録完了を押された場合
+                //session_start();
+                if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
+                    unset($_SESSION['token']);
+                    $product->registerProduct();
+                    // $this->view(
+                    //     'products.register_complete',
+                    //     []
+                    // );
+                    header('Location: ' . '/products');
+                } else {
+                    header('Location: ' . '/');
+                }
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public function store()
+    {
+        if (!$this->request->isPost()) {
+            throw new HttpNotFoundException();
+        }
+    }
+
+    public function edit()
+    {
+    }
+
+    public function update()
+    {
+    }
+
+    public function destroy()
+    {
     }
 }

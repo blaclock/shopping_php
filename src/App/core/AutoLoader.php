@@ -1,4 +1,7 @@
 <?php
+
+namespace App\core;
+
 class AutoLoader
 {
     private $dirs;
@@ -15,12 +18,22 @@ class AutoLoader
 
     private function loadClass($className)
     {
+        // namespaceを使ってもオートロードができるように
+        $fileName = $this->getLoadFileName($className);
+
         foreach ($this->dirs as $dir) {
-            $file = $dir . '/' . $className . '.php';
+            $file = $dir . '/' . $fileName . '.php';
             if (is_readable($file)) {
                 require $file;
                 return;
             }
         }
+    }
+
+    private function getLoadFileName($className)
+    {
+        $filePath = explode('\\', $className);
+        $fileName = $filePath[array_key_last($filePath)];
+        return $fileName;
     }
 }

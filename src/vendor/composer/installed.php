@@ -3,7 +3,7 @@
         'name' => 'root/html',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'd8cae60257d4acdc0d1aaaea9f629fdd31eaceb0',
+        'reference' => '4c459e4609963f72cfc90a20365fc4c2f9cdd4b2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'composer/pcre' => array(
-            'pretty_version' => '3.0.2',
-            'version' => '3.0.2.0',
-            'reference' => '4482b6409ca6bfc2af043a5711cd21ac3e7a8dfb',
+            'pretty_version' => '3.1.0',
+            'version' => '3.1.0.0',
+            'reference' => '4bff79ddd77851fe3cdd11616ed3f92841ba5bd2',
             'type' => 'library',
             'install_path' => __DIR__ . '/./pcre',
             'aliases' => array(),
@@ -128,9 +128,9 @@
             'dev_requirement' => true,
         ),
         'phpunit/php-code-coverage' => array(
-            'pretty_version' => '9.2.18',
-            'version' => '9.2.18.0',
-            'reference' => '12fddc491826940cf9b7e88ad9664cf51f0f6d0a',
+            'pretty_version' => '9.2.19',
+            'version' => '9.2.19.0',
+            'reference' => 'c77b56b63e3d2031bd8997fcec43c1925ae46559',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpunit/php-code-coverage',
             'aliases' => array(),
@@ -208,7 +208,7 @@
         'root/html' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'd8cae60257d4acdc0d1aaaea9f629fdd31eaceb0',
+            'reference' => '4c459e4609963f72cfc90a20365fc4c2f9cdd4b2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

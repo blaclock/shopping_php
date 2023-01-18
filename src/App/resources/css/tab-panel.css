@@ -1,0 +1,40 @@
+.tab-group {
+  display: flex;
+  justify-content: center;
+}
+
+.tab {
+  flex-grow: 1;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  list-style: none;
+  background-color: lightgray;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tab:hover {
+  opacity: .9;
+}
+
+.tab:nth-of-type(-n+2) {
+  border-right: 1px gray solid;
+}
+
+.panel-group {
+  background: whitesmoke;
+}
+
+.panel {
+  display: none;
+}
+
+.tab.is-active {
+  background: gray;
+  color: #FFF;
+  transition: all 0.2s ease-out;
+}
+
+.panel.is-show {
+  display: block;
+}

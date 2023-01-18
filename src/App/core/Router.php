@@ -11,9 +11,13 @@ class Router
 
     public function resolve($pathInfo)
     {
+        $pathInfo = urldecode($pathInfo);
+        // var_dump($pathInfo);
         // $path:コントローラー、$pattern:アクション
         foreach ($this->routes as $path => $pattern) {
-            if ($path === $pathInfo) {
+            // if (preg_match('/^' . str_replace('/', '\/', $path) . '$/', $pathInfo)) {
+            if (preg_match('/^' . str_replace('/', '\/', $path) . '$/u', $pathInfo)) {
+                // var_dump($pattern);
                 return $pattern;
             }
         }
