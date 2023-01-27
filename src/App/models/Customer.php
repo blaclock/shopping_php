@@ -27,6 +27,15 @@ class Customer extends Model
         $res = $this->db->insert('customers', $insData);
     }
 
+    public function getCustomers()
+    {
+        $table = ' customers ';
+        $col = ' * ';
+
+        $res = $this->db->select($table, $col);
+        return (count($res) !== 0) ? $res : false;
+    }
+
     public function getCustomer($customer_id)
     {
         $table = ' customers ';

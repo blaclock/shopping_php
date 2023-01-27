@@ -9,6 +9,7 @@ class Application
 
     public function __construct()
     {
+        // phpinfo();
         $this->router = new Router($this->registerRoutes());
         $this->request = new Request();
         $this->response = new Response();
@@ -45,13 +46,15 @@ class Application
 
     private function runAction($controllerName, $action)
     {
+        // var_dump($controllerName);
         // namespaceで名前空間を定義しているので、コントローラーで定義されている名前空間を結合する
         $controllerClass = 'App\\controllers\\' . ucfirst($controllerName) . 'Controller';
+        // var_dump($controllerClass);
         // コントローラーがない場合に例外を投げる
         if (!class_exists($controllerClass)) {
             throw new HttpNotFoundException();
         }
-
+        // var_dump($controllerClass);
         $controller = new $controllerClass($this);
         $controller->run($action);
     }
@@ -65,10 +68,6 @@ class Application
             '/products[\?category_id=\d+]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'index'],
             '/products\?q=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'search'],
             '/product\?id=\d+' => ['controller' => 'Product', 'action' => 'show'],
-            '/products/register' => ['controller' => 'Product', 'action' => 'create'],
-            '/products/confirm' => ['controller' => 'Product', 'action' => 'confirm'],
-            '/products/store' => ['controller' => 'Product', 'action' => 'store'],
-            '/products/\?id=\d+/edit' => ['controller' => 'Product', 'action' => 'edit'],
             // レビュー
             '/product/review\?product_id=\d+' => ['controller' => 'Review', 'action' => 'create'],
             '/product/review/store' => ['controller' => 'Review', 'action' => 'store'],
@@ -85,7 +84,7 @@ class Application
             '/password/confirm' => ['controller' => 'Login', 'action' => 'confirmPassword'],
             '/password/send' => ['controller' => 'Login', 'action' => 'sendPassword'],
             // マイページ
-            '/mypage' => ['controller' => 'Customer', 'action' => 'index'],
+            '/mypage' => ['controller' => 'Customer', 'action' => 'top'],
             '/register' => ['controller' => 'Customer', 'action' => 'create'],
             '/register/confirm' => ['controller' => 'Customer', 'action' => 'store'],
             '/mypage/detail' => ['controller' => 'Customer', 'action' => 'show'],
@@ -99,6 +98,22 @@ class Application
             // 購入履歴
             '/mypage/orders' => ['controller' => 'Order', 'action' => 'index'],
             '/mypage/orders/store' => ['controller' => 'Order', 'action' => 'store'],
+
+            // 管理者画面
+            '/admin' => ['controller' => 'Admin', 'action' => 'index'],
+            '/admin/login' => ['controller' => 'Admin', 'action' => 'login'],
+            '/admin/login/confirm' => ['controller' => 'Admin', 'action' => 'confirm'],
+            '/admin/logout' => ['controller' => 'Admin', 'action' => 'logout'],
+            '/admin/customers' => ['controller' => 'Customer', 'action' => 'index'],
+            // 商品
+            '/admin/products/top' => ['controller' => 'Admin/Product', 'action' => 'top'],
+            '/admin/products[\?category_id=\d+]*[\&page=\d+]*' => ['controller' => 'Admin/Product', 'action' => 'index'],
+            '/admin/product/delete\?id=\d+' => ['controller' => 'Admin/Product', 'action' => 'destroy'],
+            '/admin/product\?id=\d+' => ['controller' => 'Product', 'action' => 'show'],
+            '/admin/product/register' => ['controller' => 'Product', 'action' => 'create'],
+            '/admin/products/confirm' => ['controller' => 'Product', 'action' => 'confirm'],
+            '/admin/products/store' => ['controller' => 'Product', 'action' => 'store'],
+            '/admin/product/\?id=\d+/edit' => ['controller' => 'Product', 'action' => 'edit'],
 
         ];
     }

@@ -6,17 +6,12 @@ CREATE TABLE customers (
   first_name varchar(20) NOT NULL,
   family_name_kana VARCHAR(20) NOT NULL,
   first_name_kana VARCHAR(20) NOT NULL,
-  sex TINYINT UNSIGNED NOT NULL,
-  year INT NOT NULL,
-  month INT NOT NULL,
-  day INT NOT NULL,
-  zip1 VARCHAR(20) NOT NULL,
-  zip2 VARCHAR(20) NOT NULL,
+  sex VARCHAR(3) NOT NULL,
+  birth VARCHAR(10),
+  zip VARCHAR(10) NOT NULL,
   address VARCHAR(100) NOT NULL,
   email VARCHAR(50) NOT NULL UNIQUE,
-  tel1 VARCHAR(20) NOT NULL,
-  tel2 VARCHAR(20) NOT NULL,
-  tel3 VARCHAR(20) NOT NULL,
+  tel VARCHAR(20) NOT NULL,
   password varchar(100) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP,
@@ -30,16 +25,11 @@ INSERT INTO customers (
     family_name_kana,
     first_name_kana,
     sex,
-    year,
-    month,
-    day,
-    zip1,
-    zip2,
+    birth,
+    zip,
     address,
     email,
-    tel1,
-    tel2,
-    tel3,
+    tel,
     password
   )
 VALUES(
@@ -58,6 +48,37 @@ VALUES(
     '080',
     '3352',
     '9610',
+    'testpass'
+  );
+-- 管理者テーブル
+CREATE TABLE admins (
+  id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  family_name varchar(20) NOT NULL,
+  first_name varchar(20) NOT NULL,
+  family_name_kana VARCHAR(20) NOT NULL,
+  first_name_kana VARCHAR(20) NOT NULL,
+  email VARCHAR(50) NOT NULL UNIQUE,
+  password varchar(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP,
+  deleted_at TIMESTAMP,
+  delet_flag TINYINT UNSIGNED NOT NULL DEFAULT 0
+) CHARACTER SET utf8mb4;
+-- 管理者データ挿入
+INSERT INTO admins (
+    family_name,
+    first_name,
+    family_name_kana,
+    first_name_kana,
+    email,
+    password
+  )
+VALUES (
+    '黒岩',
+    '知宏',
+    'クロイワ',
+    'トモヒロ',
+    'blaclock@gmail.com',
     'testpass'
   );
 -- カート(取引) 
@@ -334,8 +355,8 @@ CREATE TABLE product_favorites (
   FOREIGN KEY pro_tbl(product_id) REFERENCES products(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4;
 -- お気に入り登録
-INSERT INTO product_favorite (customer_id, product_id)
-VALUES (5, 1);
+INSERT INTO product_favorites (customer_id, product_id)
+VALUES (11, 1);
 -- 注文テーブル
 CREATE TABLE orders (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -362,6 +383,6 @@ CREATE TABLE order_details (
 ) CHARACTER SET utf8mb4;
 -- 注文挿入
 INSERT INTO order_details (order_id, product_id, quantity)
-VALUES (1, 45, 2);
+VALUES (1, 26, 2);
 INSERT INTO order_details (order_id, product_id, quantity)
 VALUES (1, 11, 5);

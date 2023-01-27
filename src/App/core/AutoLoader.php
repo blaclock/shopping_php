@@ -24,8 +24,8 @@ class AutoLoader
         foreach ($this->dirs as $dir) {
             $file = $dir . '/' . $fileName . '.php';
             if (is_readable($file)) {
-                require $file;
-                return;
+                require_once $file;
+                // return;
             }
         }
     }

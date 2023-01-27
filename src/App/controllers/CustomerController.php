@@ -11,10 +11,25 @@ class CustomerController extends Controller
 
     public function index()
     {
-        //session_start();
+        $customer = $this->model->get('Customer');
+        $customers = $customer->getCustomers();
         if (isset($_SESSION['customer'])) {
             $this->view(
                 'customers.index',
+                [
+                    'customers' => $customers
+                ]
+            );
+        } else {
+            header('Location: ' . '/login');
+        }
+    }
+
+    public function top()
+    {
+        if (isset($_SESSION['customer'])) {
+            $this->view(
+                'customers.top',
                 []
             );
         } else {

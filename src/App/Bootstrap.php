@@ -11,6 +11,7 @@ require 'core/AutoLoader.php';
 $loader = new App\core\AutoLoader();
 $loader->registerDir(__DIR__ . '/core');
 $loader->registerDir(__DIR__ . '/controllers');
+$loader->registerDir(__DIR__ . '/controllers/Admin');
 $loader->registerDir(__DIR__ . '/controllers/auth');
 $loader->registerDir(__DIR__ . '/models');
 $loader->registerDir(__DIR__ . '/consts');

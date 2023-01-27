@@ -14,7 +14,7 @@
 <body>
     @include('components.header')
 
-    <div class="bg-gray-50 py-20">
+    <div class="bg-gray-50 py-20 min-h-screen">
         <div class="container px-5 mx-auto">
             @yield('content')
         </div>

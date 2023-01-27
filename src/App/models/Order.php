@@ -26,16 +26,22 @@ class Order extends Model
     }
 
     // カートの情報を取得する(必要な情報は、誰が$customer_id。必要な商品情報は名前、商品画像、金額)
-    public function getOrderData($customer_id)
+    public function getOrderData($customer_id = '')
     {
         $table = ' orders AS o 
                     INNER JOIN order_details AS od 
                         ON o.id = od.order_id
                     INNER JOIN products AS p 
-                        ON od.product_id = p.id ';
-        $column = ' o.id, od.product_id, p.name, od.quantity, p.price, p.image, o.created_at ';
-        $where = ' o.customer_id = ? AND o.delete_flg = ? ';
-        $arrVal = [$customer_id, 0];
+                        ON od.product_id = p.id 
+                    INNER JOIN customers AS c 
+                        ON o.customer_id = c.id ';
+        $column = ' o.id, od.product_id, p.name, od.quantity, p.price, p.image, o.created_at, o.customer_id, c.family_name, c.first_name ';
+        $where = ($customer_id !== '') ? ' o.customer_id = ? AND o.delete_flg = ? ' : '';
+        $arrVal = ($customer_id !== '') ?  [$customer_id, 0] : [];
+        // $where = ' o.customer_id = ? AND o.delete_flg = ? ';
+        // $arrVal = [$customer_id, 0];
+
+        $this->db->setOrder('id DESC');
 
         $res = $this->db->select($table, $column, $where, $arrVal);
         return (count($res) !== 0) ? $res : false;

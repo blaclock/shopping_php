@@ -216,4 +216,11 @@ class Product extends Model
 
         $this->db->insert('products', $insData);
     }
+
+    public function deleteProduct($product_id)
+    {
+        $table = ' products ';
+        $where = ' id = ? ';
+        $this->db->delete($table, $where, [$product_id]);
+    }
 }

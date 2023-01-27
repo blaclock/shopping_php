@@ -12,18 +12,15 @@ class ProductController extends Controller
     {
         // Productモデルのインスタンスを取得
         $product = $this->model->get('Product');
-        // カテゴリー一覧を取得
-        $categories = $product->getCategoryList();
+
         // 商品一覧を取得
         list($products, $paginationInfo) = $product->getProductList();
-        // var_dump($paginationInfo);
 
         $this->view(
             'products.index',
             [
-                "products" => $products,
-                "categories" => $categories,
-                "pagination" => $paginationInfo
+                'products' => $products,
+                'pagination' => $paginationInfo
             ]
         );
     }
@@ -42,18 +39,18 @@ class ProductController extends Controller
             $this->view(
                 'products.index',
                 [
-                    "products" => $products,
-                    "categories" => $categories,
-                    "pagination" => $paginationInfo
+                    'products' => $products,
+                    'categories' => $categories,
+                    'pagination' => $paginationInfo
                 ]
             );
         } else {
             $this->view(
                 'products.index',
                 [
-                    "products" => $products,
-                    "categories" => $categories,
-                    "pagination" => $paginationInfo
+                    'products' => $products,
+                    'categories' => $categories,
+                    'pagination' => $paginationInfo
                 ]
             );
         }
@@ -67,6 +64,8 @@ class ProductController extends Controller
         // 商品情報を取得する
         $id = $_GET['id'];
         $productData = $product->getProductDetailData($id);
+
+
 
         // レビューを取得する
         $reviews = $this->model->get('Review')->getReviews($id);
@@ -83,10 +82,10 @@ class ProductController extends Controller
         $this->view(
             'products.show',
             [
-                "product" => $productData,
-                "reviews" => $reviews,
-                "favorites" => $favorites,
-                "token" => $token
+                'product' => $productData,
+                'reviews' => $reviews,
+                'favorites' => $favorites,
+                'token' => $token
             ]
         );
     }

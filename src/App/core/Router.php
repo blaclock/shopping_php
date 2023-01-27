@@ -17,7 +17,7 @@ class Router
         foreach ($this->routes as $path => $pattern) {
             // if (preg_match('/^' . str_replace('/', '\/', $path) . '$/', $pathInfo)) {
             if (preg_match('/^' . str_replace('/', '\/', $path) . '$/u', $pathInfo)) {
-                // var_dump($pattern);
+                $pattern = str_replace('/', '\\', $pattern);
                 return $pattern;
             }
         }
