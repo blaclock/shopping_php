@@ -31,8 +31,10 @@ class Customer extends Model
     {
         $table = ' customers ';
         $col = ' * ';
+        $where = ' delete_flag = ? ';
+        $arrVal = [0];
 
-        $res = $this->db->select($table, $col);
+        $res = $this->db->select($table, $col, $where, $arrVal);
         return (count($res) !== 0) ? $res : false;
     }
 
@@ -67,14 +69,23 @@ class Customer extends Model
         $where = ' id = ? ';
         $arrVal = [$customer_id];
 
-        $res = $this->db->update($table, $insData, $where, $arrVal);
+        $this->db->update($table, $insData, $where, $arrVal);
     }
 
     public function deleteCustomer($customer_id)
     {
+        // 削除時間を取得
+        $deleted_time = date('Y-m-d H:i:s');
+
         $table = ' customers ';
+        $insData = [
+            'deleted_at' => $deleted_time,
+            'delete_flag' => 1
+        ];
         $where = ' id = ? ';
-        $res = $this->db->delete($table, $where, [$customer_id]);
+        $arrVal = [$customer_id];
+        // $res = $this->db->delete($table, $where, [$customer_id]);
+        $res = $this->db->update($table, $insData, $where, $arrVal);
         if ($res !== false) {
             unset($_SESSION['customer']);
         }
@@ -91,5 +102,10 @@ class Customer extends Model
 
         $res = $this->db->select($table, $col, $where, $arrVal);
         return (count($res) !== 0) ? $res[0]['password'] : false;
+    }
+
+    public function registerCustomerCSV()
+    {
+        # code...
     }
 }

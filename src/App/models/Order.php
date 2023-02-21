@@ -5,8 +5,10 @@ namespace App\models;
 class Order extends Model
 {
     // カートに登録する(必要な情報は、誰が$customer_id、何を($item_id))
-    public function addOrder($customer_id, $product_id, $quantity)
+    public function addOrder($customer_id)
     {
+        $product_id = $_POST['product_id'];
+        $quantity = $_POST['quantity'];
         // 注文テーブルにレコードを挿入
         $table = ' orders ';
         $insData = ['customer_id' => $customer_id];
@@ -38,13 +40,34 @@ class Order extends Model
         $column = ' o.id, od.product_id, p.name, od.quantity, p.price, p.image, o.created_at, o.customer_id, c.family_name, c.first_name ';
         $where = ($customer_id !== '') ? ' o.customer_id = ? AND o.delete_flg = ? ' : '';
         $arrVal = ($customer_id !== '') ?  [$customer_id, 0] : [];
-        // $where = ' o.customer_id = ? AND o.delete_flg = ? ';
-        // $arrVal = [$customer_id, 0];
+
+        // 絞り込み期間を設定
+        $this->setOrderPeriod($where, $arrVal);
+        // 商品数を取得
+        $orderNum = $this->db->count($table, $where, $arrVal);
+
+        // ページネーション
+        $paginationInfo = $this->setPagination($orderNum);
 
         $this->db->setOrder('id DESC');
 
         $res = $this->db->select($table, $column, $where, $arrVal);
-        return (count($res) !== 0) ? $res : false;
+        return (count($res) !== 0) ? [$res, $orderNum, $paginationInfo] : false;
+    }
+
+    private function setOrderPeriod(&$where, &$arrVal)
+    {
+        if (!empty($_GET['period_beginning'])) {
+            $where .= ' o.created_at >= ? ';
+            if (!empty($_GET['period_ending'])) {
+                $where .= 'AND';
+            }
+            $arrVal[] = $_GET['period_beginning'];
+        }
+        if (!empty($_GET['period_ending'])) {
+            $where .= ' o.created_at <= ? ';
+            $arrVal[] = $_GET['period_ending'] . ' 23:59:59';
+        }
     }
 
     // カート情報を削除する：必要な情報はどのカートを($crt_id)

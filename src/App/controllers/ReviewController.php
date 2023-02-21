@@ -64,7 +64,8 @@ class ReviewController extends Controller
         $validation = new Validation();
         list($isError, $errMessage) = $validation->validateForm([
             'title' => 'required',
-            'content' => 'required'
+            'content' => 'required',
+            'score' => 'radio'
         ]);
 
         if ($isError) {
@@ -100,75 +101,6 @@ class ReviewController extends Controller
                     'customer' => $review->getReview($_SESSION['customer']['id'])
                 ]
             );
-        }
-    }
-
-    public function update()
-    {
-        if (!$this->request->isPost()) {
-            throw new HttpNotFoundException();
-        }
-
-        // Reviewモデルのインスタンスを取得
-        $review = $this->model->get('Review');
-
-        $mode = $_POST['send'];
-        switch ($mode) {
-            case \App\consts\CommonConst::UPDATE_CONFIRM:
-                // 登録確認が押された場合
-                // Formで送信された値をチェックする
-                $validation = new Validation();
-                list($isError, $errMessage) = $validation->validateForm([
-                    'email' => 'required|email',
-                ]);
-
-                if ($isError) {
-                    // var_dump($errMessage);
-                    // var_dump($_POST);
-                    $this->view(
-                        'customers.edit',
-                        [
-                            'customer' => $_POST,
-                            'errMessage' => $errMessage
-                        ]
-                    );
-                } else {
-                    // var_dump($_POST);
-                    //session_start();
-                    $token = uniqid('', true);
-                    $_SESSION['token'] = $token;
-                    $this->view(
-                        'customers.update_confirm',
-                        [
-                            'customer' => $_POST,
-                            'token' => $token
-                        ]
-                    );
-                }
-
-                break;
-            case \App\consts\CommonConst::REGISTER_BACK:
-                // 戻るを押された場合
-                $this->view(
-                    'customers.edit',
-                    [
-                        'customer' => $_POST,
-                    ]
-                );
-                break;
-            case \App\consts\CommonConst::UPDATE_COMPLETE:
-                // 更新するを押された場合
-                //session_start();
-                if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
-                    unset($_SESSION['token']);
-                    $review->updateReview($_SESSION['customer']['id']);
-                    header('Location: ' . '/mypage');
-                } else {
-                    header('Location: ' . '/mypage/detail');
-                }
-                break;
-            default:
-                break;
         }
     }
 

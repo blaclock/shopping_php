@@ -16,12 +16,13 @@ class ProductController extends Controller
             $product = $this->model->get('Product');
 
             // 商品一覧を取得
-            list($products, $paginationInfo) = $product->getProductList();
+            list($products, $productNum, $paginationInfo) = $product->getProductList();
 
             $this->view(
                 'admins.products.index',
                 [
                     'products' => $products,
+                    'productNum' => $productNum,
                     'pagination' => $paginationInfo
                 ]
             );
@@ -55,7 +56,7 @@ class ProductController extends Controller
 
         if ($product !== false) {
             $this->view(
-                'products.index',
+                'admins.products.index',
                 [
                     'products' => $products,
                     'categories' => $categories,
@@ -64,7 +65,7 @@ class ProductController extends Controller
             );
         } else {
             $this->view(
-                'products.index',
+                'admins.products.index',
                 [
                     'products' => $products,
                     'categories' => $categories,
@@ -89,7 +90,7 @@ class ProductController extends Controller
         $reviews = $this->model->get('Review')->getReviews($id);
 
         if (\App\models\Auth::check()) {
-            $favorites = $this->model->get('Product_Favorite')->getFavorites($_SESSION['customer']['id']);
+            $favorites = $this->model->get('Product_Favorite')->getFavorites($_SESSION['product']['id']);
         } else {
             $favorites = [];
         }
@@ -98,7 +99,7 @@ class ProductController extends Controller
         $_SESSION['token'] = $token;
 
         $this->view(
-            'products.show',
+            'admins.products.show',
             [
                 'product' => $productData,
                 'reviews' => $reviews,
@@ -116,7 +117,7 @@ class ProductController extends Controller
         $categories = $product->getCategoryList();
 
         $this->view(
-            'products.create',
+            'admins.products.create',
             [
                 'categories' => $categories,
                 'productData' => ['category' => []]
@@ -124,7 +125,7 @@ class ProductController extends Controller
         );
     }
 
-    public function confirm()
+    public function store()
     {
         if (!$this->request->isPost()) {
             throw new HttpNotFoundException();
@@ -149,17 +150,15 @@ class ProductController extends Controller
                     'detail' => 'required'
                 ]);
 
-                // var_dump($errMessage);
-                // var_dump($isError);
-                // var_dump($_POST);
-                // var_dump($_FILES);
-
                 if ($isError) {
                     // var_dump($errMessage);
+                    // $productData = $_POST;
+                    $productData = $validation->getFormData();
+                    // var_dump($productData);
                     $this->view(
-                        'products.create',
+                        'admins.products.create',
                         [
-                            'productData' => $validation->getFormData(),
+                            'productData' => $productData,
                             'categories' => $categories,
                             'errMessage' => $errMessage
                         ]
@@ -170,10 +169,12 @@ class ProductController extends Controller
                     $token = uniqid('', true);
                     $_SESSION['token'] = $token;
 
+                    $productData = $validation->getFormData();
                     $this->view(
-                        'products.confirm',
+                        'admins.products.confirm',
                         [
-                            'productData' => $validation->getFormData(),
+                            'productData' => $productData,
+                            'categories' => $categories,
                             'token' => $token
                         ]
                     );
@@ -183,7 +184,7 @@ class ProductController extends Controller
             case \App\consts\CommonConst::REGISTER_BACK:
                 // 戻るを押された場合
                 $this->view(
-                    'products.create',
+                    'admins.products.create',
                     [
                         'productData' => $_POST,
                         'categories' => $categories
@@ -192,17 +193,17 @@ class ProductController extends Controller
                 break;
             case \App\consts\CommonConst::REGISTER_COMPLETE:
                 // 登録完了を押された場合
-                //session_start();
                 if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
                     unset($_SESSION['token']);
+                    $product = $this->model->get('Product');
                     $product->registerProduct();
                     // $this->view(
-                    //     'products.register_complete',
+                    //     'admins.products.register_complete',
                     //     []
                     // );
-                    header('Location: ' . '/products');
+                    header('Location: ' . '/admin/products');
                 } else {
-                    header('Location: ' . '/');
+                    header('Location: ' . '/admin');
                 }
 
                 break;
@@ -211,19 +212,115 @@ class ProductController extends Controller
         }
     }
 
-    public function store()
+    public function edit()
+    {
+        if (\App\models\Auth::checkAdmin()) {
+            // Productモデルのインスタンスを取得
+            $product = $this->model->get('Product');
+            // カテゴリー一覧を取得
+            $categories = $product->getCategoryList();
+
+            // 商品情報を取得する
+            $id = $_GET['id'];
+            $productData = $product->getProductDetailData($id);
+
+            $token = uniqid('', true);
+            $_SESSION['token'] = $token;
+
+            $this->view(
+                'admins.products.edit',
+                [
+                    'productData' => $productData,
+                    'categories' => $categories,
+                    'token' => $token
+                ]
+            );
+        } else {
+            header("Location: " . "/admin/login");
+        }
+    }
+
+
+    public function update()
     {
         if (!$this->request->isPost()) {
             throw new HttpNotFoundException();
         }
-    }
 
-    public function edit()
-    {
-    }
+        // Customerモデルのインスタンスを取得
+        $product = $this->model->get('Product');
+        // カテゴリー一覧を取得
+        $categories = $product->getCategoryList();
 
-    public function update()
-    {
+        $mode = $_POST['send'];
+        switch ($mode) {
+            case \App\consts\CommonConst::UPDATE_CONFIRM:
+                // 登録確認が押された場合
+                // Formで送信された値をチェックする
+                $validation = new Validation();
+                list($isError, $errMessage) = $validation->validateForm([
+                    'name' => 'required',
+                    'price' => 'required|num',
+                    'category_id' => 'radio',
+                    'image' => 'image:update',
+                    'detail' => 'required'
+                ]);
+
+                if ($isError) {
+                    $productData = $validation->getFormData();
+                    $productData = $_POST;
+                    // var_dump($productData);
+                    var_dump($_POST);
+                    $this->view(
+                        'admins.products.edit',
+                        [
+                            'productData' => $_POST,
+                            'categories' => $categories,
+                            'errMessage' => $errMessage
+                        ]
+                    );
+                } else {
+                    //session_start();
+                    $token = uniqid('', true);
+                    $_SESSION['token'] = $token;
+                    $productData = $validation->getFormData();
+                    $this->view(
+                        'admins.products.update_confirm',
+                        [
+                            'productData' => $productData,
+                            'categories' => $categories,
+                            'token' => $token
+                        ]
+                    );
+                }
+
+                break;
+            case \App\consts\CommonConst::REGISTER_BACK:
+                // 戻るを押された場合
+                // var_dump($_POST);
+                $this->view(
+                    'admins.products.edit',
+                    [
+                        'productData' => $_POST,
+                        'categories' => $categories
+                    ]
+                );
+                break;
+            case \App\consts\CommonConst::UPDATE_COMPLETE:
+                // 更新するを押された場合
+                //session_start();
+                if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
+                    // var_dump($_POST);
+                    unset($_SESSION['token']);
+                    $product->updateProduct($_POST['id']);
+                    header('Location: ' . '/admin/products');
+                } else {
+                    header('Location: ' . '/admin');
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public function destroy()
@@ -231,5 +328,19 @@ class ProductController extends Controller
         $product = $this->model->get('Product');
         $product->deleteProduct($_GET['id']);
         header('Location: ' . '/admin/products');
+    }
+
+    public function CSV()
+    {
+        $this->view(
+            'admins.products.csv',
+            []
+        );
+    }
+    public function importCSV()
+    {
+    }
+    public function exportCSV()
+    {
     }
 }

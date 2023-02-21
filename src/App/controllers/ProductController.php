@@ -14,12 +14,24 @@ class ProductController extends Controller
         $product = $this->model->get('Product');
 
         // 商品一覧を取得
-        list($products, $paginationInfo) = $product->getProductList();
+        list($products, $productNum, $paginationInfo) = $product->getProductList();
+
+        $review = $this->model->get('Review');
+        $reviews = $review->getReviews();
+
+        // お気に入り登録情報を取得する
+        if (\App\models\Auth::check()) {
+            $favorites = $this->model->get('Product_Favorite')->getFavorites($_SESSION['customer']['id']);
+        } else {
+            $favorites = [];
+        }
 
         $this->view(
             'products.index',
             [
                 'products' => $products,
+                'productNum' => $productNum,
+                'favorites' => $favorites,
                 'pagination' => $paginationInfo
             ]
         );
@@ -32,7 +44,7 @@ class ProductController extends Controller
         // カテゴリー一覧を取得
         $categories = $product->getCategoryList();
         // 検索ワードに基づいて商品を取得
-        list($products, $paginationInfo) = $product->searchProduct($_GET['q']);
+        list($products, $productNum, $paginationInfo) = $product->searchProduct($_GET['q']);
         // var_dump($paginationInfo);
 
         if ($product !== false) {
@@ -40,7 +52,7 @@ class ProductController extends Controller
                 'products.index',
                 [
                     'products' => $products,
-                    'categories' => $categories,
+                    'productNum' => $productNum,
                     'pagination' => $paginationInfo
                 ]
             );
@@ -65,11 +77,12 @@ class ProductController extends Controller
         $id = $_GET['id'];
         $productData = $product->getProductDetailData($id);
 
-
-
         // レビューを取得する
-        $reviews = $this->model->get('Review')->getReviews($id);
+        $review = $this->model->get('Review');
+        $reviews = $review->getReviews($id);
+        $score = $review->getScore($id);
 
+        // お気に入り登録情報を取得する
         if (\App\models\Auth::check()) {
             $favorites = $this->model->get('Product_Favorite')->getFavorites($_SESSION['customer']['id']);
         } else {
@@ -84,6 +97,7 @@ class ProductController extends Controller
             [
                 'product' => $productData,
                 'reviews' => $reviews,
+                'score' => $score,
                 'favorites' => $favorites,
                 'token' => $token
             ]

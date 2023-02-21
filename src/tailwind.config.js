@@ -6,7 +6,16 @@ module.exports = {
     extend: {
       spacing: {
         '120': '30rem',
-      }
+      },
+      keyframes: {
+        grayTransition: {
+          '0%': { background: 'white' },
+          '100%': { background: 'gray' },
+        },
+      },
+      animation: {
+        'buttonTransition': 'grayTransition .2s linear infinite',
+      },
     },
   },
   plugins: [],

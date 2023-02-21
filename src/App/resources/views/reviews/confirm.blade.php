@@ -20,7 +20,7 @@
                 <textarea name="content" id="content" class="border border-gray-300 p-2 w-[700px] h-[130px]">{{ $customer['content'] }}</textarea>
             </li>
         </ul>
-        <form action="/">
+        <form action="/products?id={{ $product['id'] }}">
             <input type="submit" name="send"
                 class="rounded-full border border-gray-500 w-32 bg-white hover:bg-gray-700 hover:text-white px-6 py-4 hover:cursor-pointer"
                 value="投稿">

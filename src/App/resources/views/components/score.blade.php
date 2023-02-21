@@ -1,0 +1,19 @@
+@if ($type === 'average')
+    @for ($i = 0; $i < (int) $score; $i++)
+        <span class="text-lg w-6 h-6 inline-block"
+            style="background-color: orange;clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);"></span>
+    @endfor
+    @for ($i = 0; $i < 5 - (int) $score; $i++)
+        <span class="text-lg w-6 h-6 inline-block"
+            style="background-color: rgb(75, 85, 99);clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);"></span>
+    @endfor
+@else
+    @for ($i = 0; $i < (int) $review['score']; $i++)
+        <span class="text-lg w-6 h-6 inline-block"
+            style="background-color: orange;clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);"></span>
+    @endfor
+    @for ($i = 0; $i < 5 - (int) $review['score']; $i++)
+        <span class="text-lg w-6 h-6 inline-block"
+            style="background-color: rgb(75, 85, 99);clip-path: polygon(50% 5%, 61% 40%, 98% 40%, 68% 62%, 79% 96%, 50% 75%, 21% 96%, 32% 62%, 2% 40%, 39% 40%);"></span>
+    @endfor
+@endif

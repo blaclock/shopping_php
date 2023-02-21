@@ -15,18 +15,41 @@
             <p>MENU</p>
             {% include 'category_menu.html.twig' %}
         </div> --}}
-    <div class="flex lg:w-[1000px] mx-auto mb-20">
-        <div class="mr-20">
-            <div class="w-[500px]">
+    <div class="flex flex-col md:flex-row lg:w-[1000px] mx-auto mb-10 md:mb-20">
+        <div class="mb-5 md:mb-0 md:mr-20">
+            <div class="w-full md:w-[500px] relative">
                 <img src="{{ App\consts\CommonConst::IMG_PATH }}products/{{ $product['image'] }}"
                     alt="{{ $product['image'] }}" class="w-full">
+                @if (in_array($product['id'], $favorites))
+                    <a href="/mypage/favorites/remove?product_id={{ $product['id'] }}"
+                        class="absolute top-4 right-4 inline-block w-6 h-6 bg-red-500"
+                        style="clip-path:path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z')">
+                    </a>
+                @else
+                    <a href="/mypage/favorites/add?product_id={{ $product['id'] }}" class="">
+                        <svg class="w-6 fill-a_text absolute top-4 right-4" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 19.771 17.501">
+                            <path class=""
+                                d="M-3107.872-749.553a5.6,5.6,0,0,1,4.284,1.985,5.6,5.6,0,0,1,4.272-1.974h0a5.639,5.639,0,0,1,.61.033,5.618,5.618,0,0,1,4.969,6.175c-.147,1.805-1.793,4.239-4.893,7.234a56.356,56.356,0,0,1-4.506,3.895.75.75,0,0,1-.908,0,56.379,56.379,0,0,1-4.506-3.894c-3.1-2.994-4.745-5.427-4.892-7.232a5.59,5.59,0,0,1,.608-3.216,5.585,5.585,0,0,1,2.311-2.335A5.619,5.619,0,0,1-3107.872-749.553Zm4.282,4.058h0a.75.75,0,0,1-.66-.395,4.106,4.106,0,0,0-3.622-2.163,4.113,4.113,0,0,0-1.941.491,4.088,4.088,0,0,0-2.137,4.076c0,.008,0,.017,0,.025.108,1.39,1.685,3.621,4.44,6.282,1.586,1.532,3.166,2.826,3.918,3.424.754-.6,2.34-1.9,3.928-3.434,2.749-2.657,4.322-4.885,4.43-6.273l0-.023a4.116,4.116,0,0,0-3.639-4.533,4.143,4.143,0,0,0-.448-.024,4.106,4.106,0,0,0-3.614,2.154A.75.75,0,0,1-3103.59-745.5Z"
+                                transform="translate(3113.476 749.553)" fill="#ef4406" />
+                        </svg>
+                    </a>
+                @endif
             </div>
         </div>
         <div class="w-[100%-500px] text-gray-600">
-            <h1 class="text-3xl mb-4">{{ $product['name'] }}</h1>
-            <p class="mb-4">{{ $product['detail'] }}</p>
+            <h1 class="text-xl md:text-3xl mb-2">{{ $product['name'] }}</h1>
+            <div class="flex items-center">
+                @component('components.score', ['type' => 'average'])
+                @endcomponent
+                <span class="text-xl">({{ number_format((float) $score, 1, '.') }})</span>
+            </div>
+            @if (count($reviews) !== 0)
+                <p class="text-sm mb-4">{{ count($reviews) }}件のレビューが登録されています</p>
+            @endif
+            {{-- <p class="mb-4">{!! $product['detail'] !!}</p> --}}
             <p class="text-2xl mb-4">&yen;{{ number_format($product['price']) }}<span class="text-sm">(税込)</span></p>
-            <form action="/cart/add" method="POST" class="py-4">
+            <form action="/cart/add" method="POST" class="">
                 <input type="hidden" name="token" value="{{ $token }}">
                 <input type="hidden" name="product_id" value="{{ $product['id'] }}">
                 <div class="flex items-center mb-4">
@@ -62,50 +85,32 @@
 
                 </div>
             </form>
-
-            <div class="relative">
-                @if (in_array($product['id'], $favorites))
-                    <a href="/mypage/favorites/remove?product_id={{ $product['id'] }}"
-                        class="flex rounded-full border border-gray-500 w-[220px] px-4 py-4 bg-white hover:opacity-70  hover:cursor-pointer">
-                        <div class="inline-block w-6 h-6 scale-75 bg-red-500 mr-2"
-                            style="clip-path:path('M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z')">
-                        </div>
-                        <span>お気に入りから外す</span>
-                    </a>
-                @else
-                    <a href="/mypage/favorites/add?product_id={{ $product['id'] }}"
-                        class="flex px-4 py-4 rounded-full border border-gray-500 w-[220px]  bg-white hover:opacity-70 hover:cursor-pointer">
-                        <div class="inline-block w-6 h-6 scale-75 bg-red-500 mr-2"
-                            style="clip-path:path('M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402m5.726-20.583c-2.203 0-4.446 1.042-5.726 3.238-1.285-2.206-3.522-3.248-5.719-3.248-3.183 0-6.281 2.187-6.281 6.191 0 4.661 5.571 9.429 12 15.809 6.43-6.38 12-11.148 12-15.809 0-4.011-3.095-6.181-6.274-6.181')">
-                        </div>
-                        <span>お気に入りに追加</span>
-                    </a>
-                @endif
-            </div>
         </div>
     </div>
 
     <section class="text-gray-600 body-font">
-        <div class="container px-5 pb-20 mx-auto flex flex-wrap flex-col">
+        <div class="container pb-20 mx-auto flex flex-wrap flex-col">
             <div class="tab-panel">
                 <ul class="flex mx-auto flex-wrap lg:w-[1000px] tab-group">
                     <li
-                        class="sm:px-6 w-1/2 lg:w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none text-gray-600 tracking-wider rounded-t tab tab-A is-active text-center">
+                        class="px-2 md:px-6 w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none text-gray-600 tracking-wider rounded-t tab tab-A is-active text-center">
                         <span>ストーリー</span>
                     </li>
                     <li
-                        class="sm:px-6 w-1/2 lg:w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider tab tab-B text-center">
+                        class="px-2 md:px-6 w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider tab tab-B text-center">
                         <span>商品情報</span>
                     </li>
                     <li
-                        class="sm:px-6 w-1/2 lg:w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider tab tab-C text-center">
+                        class="px-2 md:px-6 w-1/3 justify-center border-b-2 title-font font-medium bg-gray-200 inline-flex items-center leading-none border-gray-200 hover:text-gray-900 tracking-wider tab tab-C text-center">
                         <span>飲み方</span>
                     </li>
                 </ul>
 
                 <div class="panel-group px-4 py-8 lg:w-[1000px] mx-auto">
                     <div class="panel tab-A is-show">contentA</div>
-                    <div class="panel tab-B hidden">contentB</div>
+                    <div class="panel tab-B hidden">
+                        <pre class="font-base">{{ $product['detail'] }}</pre>
+                    </div>
                     <div class="panel tab-C hidden">contentC</div>
                 </div>
 
@@ -113,16 +118,20 @@
     </section>
 
     <section class="lg:w-[1000px] mx-auto">
-        <h1 class="text-4xl mb-2">お客様の声</h1>
-        <a href="/product/review?product_id={{ $product['id'] }}" class="inline-block mb-6 hover:opacity-70">レビューを書く</a>
-        {{-- <a href="/product/review?product_id={{ $product['id'] }}"
-            class="block rounded-full border border-gray-500 w-[220px] px-2 py-1 bg-white hover:opacity-70  hover:cursor-pointer mb-4 text-center">レビューを書く</a> --}}
-        @if ($reviews !== false)
+        <h1 class="text-4xl mb-5">お客様の声</h1>
+        @if (count($reviews) !== 0)
             <ul class="">
                 @foreach ($reviews as $review)
                     <li class="mb-4 p-4 bg-gray-100">
-                        <p>{{ $review['account_name'] }}さん</p>
                         <p class="mb-2">{{ $review['created_at'] }}</p>
+                        <p>{{ $review['account_name'] }}さん</p>
+                        <div>
+                            @component('components.score', [
+                                'type' => 'scores',
+                                'review' => $review,
+                            ])
+                            @endcomponent
+                        </div>
                         <p class="text-xl font-medium mb-2">{{ $review['title'] }}</p>
                         <p>{{ $review['content'] }}</p>
                         <p></p>

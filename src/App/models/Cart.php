@@ -11,7 +11,7 @@ class Cart extends Model
         $insData = [
             'customer_id' => $customer_id,
             'product_id' => $product_id,
-            'num' => $quantity
+            'quantity' => $quantity
         ];
         return $this->db->insert($table, $insData);
     }
@@ -20,12 +20,24 @@ class Cart extends Model
     public function getCartData($customer_id)
     {
         $table = ' carts AS c INNER JOIN products AS p ON c.product_id = p.id ';
-        $column = ' c.id, c.product_id, p.name, c.num, p.price, p.image ';
+        $column = ' c.id, c.product_id, p.name, c.quantity, p.price, p.image ';
         $where = ' c.customer_id = ? AND c.delete_flg = ? ';
         $arrVal = [$customer_id, 0];
 
         $res = $this->db->select($table, $column, $where, $arrVal);
         return (count($res) !== 0) ? $res : false;
+    }
+
+    public function updateCart()
+    {
+        $cart_id = $_GET['cart_id'];
+        $quantity = $_GET['quantity'];
+        $table = ' carts ';
+        $insData = ['quantity' => $quantity];
+        $where = ' id = ? ';
+        $arrWhereVal = [$cart_id];
+
+        return $this->db->update($table, $insData, $where, $arrWhereVal);
     }
 
     // カート情報を削除する：必要な情報はどのカートを($crt_id)
@@ -54,7 +66,7 @@ class Cart extends Model
     public function getTotalQuantity($customer_id)
     {
         $table = ' carts ';
-        $column = ' SUM( num ) AS total_quantity ';
+        $column = ' SUM( quantity ) AS total_quantity ';
         $where = ' customer_id = ? AND delete_flg = ? ';
         $arrWhereVal = [$customer_id, 0];
         $res = $this->db->select($table, $column, $where, $arrWhereVal);
@@ -66,7 +78,7 @@ class Cart extends Model
     public function getTotalAmount($customer_id)
     {
         $table = ' carts c INNER JOIN products p ON c.product_id = p.id ';
-        $column = ' SUM( p.price * c.num ) AS totalPrice ';
+        $column = ' SUM( p.price * c.quantity ) AS totalPrice ';
         $where = ' c.customer_id = ? AND c.delete_flg = ? ';
         $arrWhereVal = [$customer_id, 0];
 

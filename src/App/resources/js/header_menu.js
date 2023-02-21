@@ -8,7 +8,6 @@ for (let i = 0; i < menus.length; i++) {
 
 // タブをクリックすると実行する関数
 function openNavMenu() {
-  console.log('open');
   // 引数で指定したセレクターと一致する直近の祖先要素を取得
   const ancestorEle = this.closest('.menu-group');
   // タブのclassの値を変更
@@ -22,7 +21,6 @@ function openNavMenu() {
 
 // タブをクリックすると実行する関数
 function closeNavMenu() {
-  console.log('close');
   // 引数で指定したセレクターと一致する直近の祖先要素を取得
   const ancestorEle = this.closest('.menu-group');
   // タブのclassの値を変更

@@ -4,11 +4,11 @@
             @if ($pagination['present'] !== 1)
                 <li class="page-item disabled">
                     <a class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 text-gray-500 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                        href="{{ $pagination['url'] }}{{ $pagination['present'] - 1 }}">Previous</a>
+                        href="{{ $pageUrl }}{{ $pagination['url'] }}{{ $pagination['present'] - 1 }}">Previous</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                        href="{{ $pagination['url'] }}{{ $pagination['present'] - 1 }}">{{ $pagination['present'] - 1 }}</a>
+                        href="{{ $pageUrl }}{{ $pagination['url'] }}{{ $pagination['present'] - 1 }}">{{ $pagination['present'] - 1 }}</a>
                 </li>
             @endif
 
@@ -21,11 +21,11 @@
             @if ($pagination['present'] !== $pagination['pageNum'])
                 <li class="page-item">
                     <a class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                        href="{{ $pagination['url'] }}{{ $pagination['present'] + 1 }}">{{ $pagination['present'] + 1 }}</a>
+                        href="{{ $pageUrl }}{{ $pagination['url'] }}{{ $pagination['present'] + 1 }}">{{ $pagination['present'] + 1 }}</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-                        href="{{ $pagination['url'] }}{{ $pagination['present'] + 1 }}">Next</a>
+                        href="{{ $pageUrl }}{{ $pagination['url'] }}{{ $pagination['present'] + 1 }}">Next</a>
                 </li>
             @endif
         </ul>

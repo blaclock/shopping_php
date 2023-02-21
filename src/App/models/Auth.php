@@ -10,8 +10,8 @@ class Auth extends Model
         $table = ' customers ';
         $col = ' * ';
 
-        $where = ' email = ? AND password = ? ';
-        $arrVal = [$_POST['email'], $_POST['password']];
+        $where = ' email = ? AND password = ? AND delete_flag = ? ';
+        $arrVal = [$_POST['email'], $_POST['password'], 0];
 
         $res = $this->db->select($table, $col, $where, $arrVal);
 

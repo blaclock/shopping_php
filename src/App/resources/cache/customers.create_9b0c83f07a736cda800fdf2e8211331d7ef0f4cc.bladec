@@ -1,0 +1,193 @@
+<?php $_shouldextend[1]=1; ?>
+
+<?php $this->startSection('content'); ?>
+ <section class="text-gray-600 body-font">
+ <h2 class="text-2xl font-bold mb-4">新規登録</h2>
+ <form method="POST" action="/register/confirm" class="px-4 mb-6">
+ <?php /* <div class="xl:w-1/4 lg:w-1/3 md:w-1/2 p-6 w-full"> */ ?>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="family_name" class="w-[250px] text-lg">氏</label>
+ <div>
+ <input type="text" name="family_name" id="family_name" value="<?php echo \htmlentities($customer['family_name']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['family_name'])): ?>
+ <?php $__currentLoopData = $errMessage['family_name']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="first_name" class="w-[250px] text-lg">名</label>
+ <div>
+ <input type="text" name="first_name" id="first_name" value="<?php echo \htmlentities($customer['first_name']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['first_name'])): ?>
+ <?php $__currentLoopData = $errMessage['first_name']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="family_name_kana" class="w-[250px] text-lg">氏(カナ)</label>
+ <div>
+ <input type="text" name="family_name_kana" id="family_name_kana"
+ value="<?php echo \htmlentities($customer['family_name_kana']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['family_name_kana'])): ?>
+ <?php $__currentLoopData = $errMessage['family_name_kana']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="first_name_kana" class="w-[250px] text-lg">名(カナ)</label>
+ <div>
+ <input type="text" name="first_name_kana" id="first_name_kana"
+ value="<?php echo \htmlentities($customer['first_name_kana']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['first_name_kana'])): ?>
+ <?php $__currentLoopData = $errMessage['first_name_kana']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="account_name" class="w-[250px] text-lg">アカウント名</label>
+ <div>
+ <input type="text" name="account_name" id="account_name" value="<?php echo \htmlentities($customer['account_name']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['account_name'])): ?>
+ <?php $__currentLoopData = $errMessage['account_name']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <p class="w-[250px] text-lg">性別</p>
+ <div>
+ <input type="radio" name="sex" value="男" class="border border-gray-600" id="男"
+ <?php if(isset($customer['sex'])): ?> <?php if($customer['sex'] == '男'): ?> checked="checked" <?php endif; ?>
+ <?php endif; ?>
+ >
+ <label for="男" class="mr-[20px]">男</label>
+ <input type="radio" name="sex" value="女" class="border border-gray-600" id="女"
+ <?php if(isset($customer['sex'])): ?> <?php if($customer['sex'] == '女'): ?> checked="checked" <?php endif; ?>
+ <?php endif; ?>
+ >
+ <label for="女" class="w-24">女</label>
+ <?php if(isset($errMessage['sex'])): ?>
+ <?php $__currentLoopData = $errMessage['sex']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="birth" class="w-[250px] text-lg">生年月日</label>
+ <div>
+ <input type="date" name="birth" id="birth" value="<?php echo \htmlentities($customer['birth']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['birth'])): ?>
+ <?php $__currentLoopData = $errMessage['birth']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="email" class="w-[250px] text-lg">メールアドレス</label>
+ <div>
+ <input type="text" name="email" id="email" value="<?php echo \htmlentities($customer['email']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['email'])): ?>
+ <?php $__currentLoopData = $errMessage['email']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="tel" class="w-[250px] text-lg">電話番号(ハイフンあり)</label>
+ <div>
+ <input type="text" name="tel" id="tel" value="<?php echo \htmlentities($customer['tel']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['tel'])): ?>
+ <?php $__currentLoopData = $errMessage['tel']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-4">
+ <label for="" class="w-[250px] text-lg">郵便番号(ハイフンあり)</label>
+ <div>
+ <input type="text" name="zip" id="" value="<?php echo \htmlentities($customer['zip']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['zip'])): ?>
+ <?php $__currentLoopData = $errMessage['zip']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-6">
+ <label for="address" class="w-[250px] text-lg">住所</label>
+ <div><input type="text" name="address" id="address" value="<?php echo \htmlentities($customer['address']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['address'])): ?>
+ <?php $__currentLoopData = $errMessage['address']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-6">
+ <label for="password" class="w-[250px] text-lg">パスワード</label>
+ <div>
+ <input type="password" name="password" id="password" value="<?php echo \htmlentities($customer['password']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="border border-gray-300 p-2">
+ <p><?php echo \htmlentities($errMessag['password']['empty']??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php if(isset($errMessage['password'])): ?>
+ <?php $__currentLoopData = $errMessage['password']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+ <li class="flex flex-col items-center md:flex-row mb-6">
+ <label for="password_confirm" class="w-[250px] text-lg">パスワード(確認用)</label>
+ <div>
+ <input type="password" name="password_confirm" id="password_confirm"
+ value="<?php echo \htmlentities($customer['password_confirm']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="border border-gray-300 p-2">
+ <?php if(isset($errMessage['password_confirm'])): ?>
+ <?php $__currentLoopData = $errMessage['password_confirm']; $this->addLoop($__currentLoopData);$this->getFirstLoop();
+ foreach($__currentLoopData as $error): $loop = $this->incrementLoopIndices();  ?>
+ <p class="text-red-400"><?php echo \htmlentities($error??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endif; ?>
+ </div>
+ </li>
+
+ <input type="submit" name="send"
+ class="rounded-full border border-gray-500 w-32 bg-white hover:bg-gray-700 hover:text-white px-6 py-4 hover:cursor-pointer"
+ value="登録確認">
+ </form>
+ </section>
+<?php $this->stopSection(); ?>
+
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

@@ -21,79 +21,104 @@ class Product extends Model
         // カテゴリーによって表示させるアイテムをかえる
         $category_id = isset($_GET['category_id']) ? $_GET['category_id'] : '';
 
-        $table = ' products AS p INNER JOIN categories AS c ON p.category_id = c.id ';
-        $col = 'p.id, p.name, p.image, p.price, c.name as category ';
-        $where = ($category_id !== '') ? ' p.category_id = ? ' : '';
+        // 商品数をカウントしてページネーションの情報を取得するためのクエリの準備
+        $table = <<<EOM
+(
+SELECT t1.id,
+t1.name,
+t1.image,
+t1.price,
+t1.category_id,
+t1.category,
+t1.detail,
+t1.created_at,
+t1.updated_at,
+t1.score,
+t1.reviews,
+count(pf.product_id) AS likes
+from (
+SELECT p.id,
+p.name,
+p.image,
+p.price,
+p.detail,
+p.category_id,
+p.created_at,
+p.updated_at,
+c.name AS category,
+avg(r.score) AS score,
+count(r.product_id) AS reviews
+FROM products AS p
+INNER JOIN categories AS c ON p.category_id = c.id
+LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+GROUP BY p.id
+) AS t1
+LEFT OUTER JOIN product_favorites AS pf on t1.id = pf.product_id
+GROUP BY t1.id
+) AS t2
+EOM;
+        $col = ' t2.id,t2.name,t2.image,t2.price,t2.category_id,t2.category,t2.created_at,t2.updated_at,t2.score,t2.reviews,t2.likes ';
+        $where = ($category_id !== '') ? ' t2.category_id = ? ' : '';
         $arrVal = ($category_id !== '') ? [$category_id] : [];
-
+        $this->setFilterCondition($where, $arrVal);
         // 商品数を取得
         $productNum = $this->db->count($table, $where, $arrVal);
-
-        $this->db->setOrder('id DESC');
+        // var_dump($productNum);
         // ページネーション
         $paginationInfo = $this->setPagination($productNum);
-        // $paginationInfo['paginationUrl'] = '/products';
-        // var_dump($_GET);
-        // var_dump($paginationInfo);
+
+        // 絞り込み条件を設定
+        $this->setFilterCondition($where, $arrVal);
+        // 検索結果の抽出順を指定
+        $this->db->setOrder($this->setSortCondition('t2'));
+        // $this->db->setGroupBy('t1.id');
 
         $res = $this->db->select($table, $col, $where, $arrVal);
+
         if ($res) {
-            return [$res, $paginationInfo];
+            return [$res, $productNum, $paginationInfo];
+        } else {
+            return [[], $productNum, $paginationInfo];
         }
-        throw new HttpNotFoundException();
     }
 
-    private function setPagination($productNum)
+    private function setFilterCondition(&$where, &$arrVal)
     {
-        // $perPage = \App\consts\CommonConst::PAGINATION;
-        $perPage = 4;
-        // 商品数を１ページに表示する商品数で割った商を切り上げ
-        $pageNum = (int)ceil($productNum / $perPage);
-        $pageNum = ($pageNum === 0) ? 1 : $pageNum;
-
-        if ($pageNum === 1) {
-            return ['pageNum' => 1];
-        }
-
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-
-        $position = ($page > 1) ? ($page * $perPage) - $perPage : 0;
-        $this->db->setLimitOff($perPage, $position);
-        // var_dump($pageNum);
-
-        return [
-            'pageNum' => $pageNum,
-            'productNum' => $productNum,
-            'present' => $page,
-            'url' => $this->setPaginationUrl()
-        ];
-    }
-
-    private function setPaginationUrl()
-    {
-        $queries = isset($_GET) ? $_GET : [];
-        $url = '/products?';
-
-        foreach ($queries as $key => $query) {
-            if ($key !== 'page') {
-                $url .= $key . '=' . $query . '&';
-            } else {
-                $url .= 'page=';
+        if (!empty($_GET['period_beginning'])) {
+            if (!empty($_GET['category_id'])) {
+                $where .= 'AND';
             }
+            $where .= ' created_at >= ? ';
+            $arrVal[] = $_GET['period_beginning'];
         }
-
-        if (!array_key_exists('page', $queries)) {
-            $url .= 'page=';
+        if (!empty($_GET['period_ending'])) {
+            if (!empty($_GET['period_beginning'])) {
+                $where .= 'AND';
+            }
+            $where .= ' created_at <= ? ';
+            $arrVal[] = $_GET['period_ending'] . ' 23:59:59 ';;
         }
+    }
 
-        return $url;
+    private function setSortCondition($table = 't1')
+    {
+        if (isset($_GET['sort'])) {
+            $sort = explode('_', $_GET['sort']);
+            if ($sort[1] === 'at') {
+                return $sort[0] . '_' . $sort[1] . ' ' . $sort[2] . ',' . $table . '.id DESC';
+            } else {
+                return $sort[0] . ' ' . $sort[1] . ',' . $table . '.id DESC';
+            }
+        } else {
+            return $table . '.id DESC';
+        }
     }
 
     // 商品の詳細情報を取得する
     public function getProductDetailData($product_id)
     {
         $table = ' products ';
-        $col = ' id, name, detail, price, image, id ';
+        $col = ' id, name, detail, price, image, category_id ';
 
         $where = ($product_id !== '') ? ' id = ? ' : '';
         // カテゴリーによって表示させるアイテムをかえる
@@ -109,8 +134,42 @@ class Product extends Model
 
     public function searchProduct($word)
     {
-        $table = ' products AS p INNER JOIN categories AS c ON p.category_id = c.id ';
-        $col = 'p.id, p.name, p.image, p.price, c.name ';
+        $table = <<<EOM
+(
+SELECT t1.id,
+t1.name,
+t1.image,
+t1.price,
+t1.category_id,
+t1.category,
+t1.detail,
+t1.created_at,
+t1.updated_at,
+t1.score,
+t1.reviews,
+count(pf.product_id) AS likes
+from (
+SELECT p.id,
+p.name,
+p.image,
+p.price,
+p.detail,
+p.category_id,
+p.created_at,
+p.updated_at,
+c.name AS category,
+avg(r.score) AS score,
+count(r.product_id) AS reviews
+FROM products AS p
+INNER JOIN categories AS c ON p.category_id = c.id
+LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+GROUP BY p.id
+) AS t1
+LEFT OUTER JOIN product_favorites AS pf on t1.id = pf.product_id
+GROUP BY t1.id
+) AS t2
+EOM;
+        $col = ' t2.id,t2.name,t2.image,t2.price,t2.category_id,t2.category,t2.created_at,t2.updated_at,t2.score,t2.reviews,t2.likes ';
 
         // 半角スペース、もしくは全角スペースがあったら複数単語検索(AND検索)
         if (strpos($word, '　') || strpos($word, ' ')) {
@@ -124,24 +183,25 @@ class Product extends Model
                 if (mb_substr($word, 0, 1) === '-') {
                     list($where, $word) = $this->notSearch($word);
                 } else {
-                    $where = " p.name = ? OR p.detail LIKE ? OR p.price = ? OR c.name = ? ";
+                    $where = " t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ? ";
                 }
 
                 $arrVal = [$word, '%' . $word . '%', $word, $word];
             }
         }
-
         // 商品数を取得
         $productNum = $this->db->count($table, $where, $arrVal);
-
         // ページネーション
         $paginationInfo = $this->setPagination($productNum);
-        // $paginationInfo['paginationUrl'] = '/products/search';
 
-        $this->db->setOrder('id DESC');
+        // 検索結果の抽出順を指定
+        $this->db->setOrder($this->setSortCondition('t2'));
+
+
         // SELECT構文で検索
         $res = $this->db->select($table, $col, $where, $arrVal);
-        return (count($res) !== 0) ? [$res, $paginationInfo] : [[], $paginationInfo];
+
+        return (count($res) !== 0) ? [$res, $productNum, $paginationInfo] : [[], 0, $paginationInfo];
     }
 
     public function andSearch(string $word)
@@ -157,7 +217,7 @@ class Product extends Model
                 list($whereSql, $words[$i]) = $this->notSearch($words[$i]);
                 $where .= $whereSql;
             } else {
-                $where .= ' (p.name = ? OR p.detail LIKE ? OR p.price = ? OR c.name = ?) ';
+                $where .= ' (t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ?) ';
             }
 
             if ($i < count($words) - 1) {
@@ -182,7 +242,7 @@ class Product extends Model
                 list($whereSql, $words[$i]) = $this->notSearch($words[$i]);
                 $where .= $whereSql;
             } else {
-                $where .= ' (p.name = ? OR p.detail LIKE ? OR p.price = ? OR c.name = ?) ';
+                $where .= ' (t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ?) ';
             }
 
             if ($i < count($words) - 1) {
@@ -197,7 +257,7 @@ class Product extends Model
 
     public function notSearch($word)
     {
-        $where = " NOT (p.name = ? OR p.detail LIKE ? OR p.price = ? OR c.name = ?) ";
+        $where = " NOT (t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ?) ";
         $word = mb_substr($word, 1); // １文字目の'-'を取り除く
         return [
             $where, $word
@@ -208,7 +268,7 @@ class Product extends Model
     {
         $insData = [
             'name' => $_POST['name'],
-            'detail' => $_POST['detail'],
+            'detail' => htmlspecialchars($_POST['detail'], ENT_QUOTES, 'UTF-8'),
             'price' => $_POST['price'],
             'image' => $_POST['image'],
             'category_id' => $_POST['category']
@@ -217,10 +277,39 @@ class Product extends Model
         $this->db->insert('products', $insData);
     }
 
-    public function deleteProduct($product_id)
+    public function updateProduct($product_id)
     {
         $table = ' products ';
+
+        // 更新時間を取得
+        $update_time = date('Y-m-d H:i:s');
+
+        $insData = [
+            'name' => $_POST['name'],
+            'price' => $_POST['price'],
+            'category_id' => $_POST['category_id'],
+            'detail' => htmlspecialchars($_POST['detail'], ENT_QUOTES, 'UTF-8'),
+            'updated_at' => $update_time
+        ];
+
+        if ($_POST['image'] !== '') {
+            $insData['image'] = $_POST['image'];
+        }
+
         $where = ' id = ? ';
-        $this->db->delete($table, $where, [$product_id]);
+        $arrVal = [$product_id];
+
+        $res = $this->db->update($table, $insData, $where, $arrVal);
+    }
+
+    public function deleteProduct($product_id)
+    {
+        $product = $this->getProductDetailData($product_id);
+        $table = ' products ';
+        $where = ' id = ? ';
+        $res = $this->db->delete($table, $where, [$product_id]);
+        if ($res !== false) {
+            unlink(\App\consts\CommonConst::IMG_DIR . 'products/' . $product['image']);
+        }
     }
 }

@@ -70,6 +70,14 @@ class CartController extends Controller
 
     public function update()
     {
+        echo ';fja;jdfa;';
+        if (\App\models\Auth::check()) {
+            $cart = $this->model->get('Cart');
+            $cart->updateCart();
+            header('Location: ' . '/cart');
+        } else {
+            header('Location: ' . '/login');
+        }
     }
 
     public function destroy()

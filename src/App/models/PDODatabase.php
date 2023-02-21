@@ -61,11 +61,13 @@ class PDODatabase
     public function select($table, $column = '', $where = '', $arrVal = [])
     {
         $sql = $this->getSql('select', $table, $where, $column);
+        // var_dump($sql);
 
         $this->sqlLogInfo($sql, $arrVal);
 
         $stmt = $this->dbh->prepare($sql);
         $res = $stmt->execute($arrVal);
+
         if ($res === false) {
             $this->catchError($stmt->errorInfo());
         }
@@ -81,6 +83,7 @@ class PDODatabase
     public function count($table, $where = '', $arrVal = [])
     {
         $sql = $this->getSql('count', $table, $where);
+        // var_dump($sql);
 
         $this->sqlLogInfo($sql, $arrVal);
         $stmt = $this->dbh->prepare($sql);
@@ -104,6 +107,7 @@ class PDODatabase
 
     public function setLimitOff($limit = '', $offset = '')
     {
+        // var_dump($limit);
         if ($limit !== '') {
             $this->limit = ' LIMIT ' . $limit;
         }
@@ -145,6 +149,39 @@ class PDODatabase
             $this->offset;
         // sql文の作成
         $sql = ' SELECT ' . $columnKey . ' FROM ' . $table . $whereSQL . $other;
+        return $sql;
+    }
+    private function getSql2($type, $tables, $where = '', $column = '')
+    {
+        switch ($type) {
+            case 'select':
+                $columnKey[] = ($column !== '') ? $column : '*';
+                break;
+
+            case 'count':
+                $columnKey[] = 'COUNT(*) AS NUM ';
+                break;
+
+            default:
+                break;
+        }
+
+        $whereSQL = ($where !== '') ? ' WHERE ' . $where : '';
+        $other =
+            $this->groupby .
+            ' ' .
+            $this->order .
+            ' ' .
+            $this->limit .
+            ' ' .
+            $this->offset;
+        // sql文の作成
+
+        $sql = '';
+        for ($i = 0; $i < count($tables); $i++) {
+            $sql .= ' SELECT ' . $columnKey[$i] . ' FROM ' . $tables[$i];
+        }
+        $sql .= $whereSQL . $other;
         return $sql;
     }
 
@@ -212,11 +249,34 @@ class PDODatabase
 
     public function delete($table, $where = "", $arrWhereVal = [])
     {
-        $where = $sql = ' DELETE FROM ' . $table . ' WHERE ' . $where;
-
+        $sql = ' DELETE FROM ' . $table . ' WHERE ' . $where;
 
         $stmt = $this->dbh->prepare($sql);
         $res = $stmt->execute($arrWhereVal);
+
+        if ($res === false) {
+            $this->catchError($stmt->errorInfo());
+        }
+        return $res;
+    }
+
+    public function import($table, $filePath)
+    {
+        $sql = " LOAD DATA INFILE '{$filePath}' INTO TABLE {$table} FIELDS TERMINATED BY ',' LINES TERMINATED BY \"\\r\\n\" IGNORE 1 LINES (@1, @2, @3, @4, @5) SET name = @1,detail = @2,price = @3,image = @4,category_id = @5 ";
+        $stmt = $this->dbh->prepare($sql);
+        $res = $stmt->execute([]);
+
+        if ($res === false) {
+            $this->catchError($stmt->errorInfo());
+        }
+        return $res;
+    }
+
+    public function export($table, $filePath)
+    {
+        $sql = " SELECT * FROM {$table} INTO OUTFILE '{$filePath}' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED by '\"' lines terminated by '\\r\\n' ";
+        $stmt = $this->dbh->prepare($sql);
+        $res = $stmt->execute([]);
 
         if ($res === false) {
             $this->catchError($stmt->errorInfo());

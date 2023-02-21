@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+ <meta charset="UTF-8">
+ <meta http-equiv="X-UA-Compatible"content="IE=edge">
+ <meta name="viewport"content="width=device-width, initial-scale=1.0">
+ <meta name="robots" content="noindex,nofollow">
+ <link rel="stylesheet"href="<?php echo \htmlentities(App\consts\CommonConst::CSS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>output.css">
+ <link rel="stylesheet"href="<?php echo \htmlentities(App\consts\CommonConst::CSS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>style.css">
+ <link rel="stylesheet"href="<?php echo \htmlentities(App\consts\CommonConst::CSS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>header_menu.css">
+ <?php echo $this->yieldPushContent('css'); ?>
+ <title>Document</title>
+</head>
+
+<body>
+ <?php  $this->startComponent('components.header', [
+ 'headerBgColor' => 'gray-700',
+ 'headerBgColorSp' => 'gray-700',
+ 'headerTextColor' => 'white',
+ 'headerTextColorSp' => 'white',
+ 'user' => 'admin',
+ ]); ?>
+ <?php echo $this->renderComponent(); ?>
+
+ <div class="flex bg-gray-50 min-h-screen">
+ <?php /* sidebar */ ?>
+ <ul class="sidebar hidden w-[200px] md:flex flex-col bg-gray-700">
+ <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin" class="p-4 text-white hover:bg-gray-600">
+ <span>トップ</span>
+ </a>
+ <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/admins/top" class="p-4 text-white hover:bg-gray-600">
+ <span>管理者情報</span>
+ </a>
+ <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/customers/top" class="p-4 text-white hover:bg-gray-600">
+ <span>顧客管理</span>
+ </a>
+ <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/products/top" class="p-4 text-white hover:bg-gray-600">
+ <span>商品管理</span>
+ </a>
+ <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/orders/top" class="p-4 text-white hover:bg-gray-600">
+ <span>注文履歴</span>
+ </a>
+ </ul>
+ <?php /* main contents */ ?>
+ <div class="container px-5 py-20 mx-auto w-full md:w-5/6">
+ <?php echo $this->yieldContent('content'); ?>
+ </div>
+ </div>
+
+ <script src="<?php echo \htmlentities(App\consts\CommonConst::JS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>header_menu.js"></script>
+ <?php echo $this->yieldPushContent('js'); ?>
+</body>
+
+</html>

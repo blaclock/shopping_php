@@ -4,6 +4,7 @@ namespace App\controllers;
 
 use App\controllers\Controller;
 use \HttpNotFoundException;
+use Validation;
 // メール関連
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -69,51 +70,68 @@ class LoginController extends Controller
             throw new HttpNotFoundException();
         }
 
-        $email = $_POST['email'];
-        $yourPassword = $this->model->get('Customer')->confirmPassword($email);
+        $validation = new Validation();
+        list($isError, $errMessage) = $validation->validateForm([
+            'email' => 'required|email|unique:customers'
+        ]);
 
-        $mail = new PHPMailer(true);
+        // バリデーションの結果が重複のみエラー（メールアドレスが存在すれば）
+        if (count($errMessage['email']) === 1 && isset($errMessage['email']['unique'])) {
+            $email = $_POST['email'];
+            $yourPassword = $this->model->get('Customer')->confirmPassword($email);
 
-        try {
-            //Gmail 認証情報
-            $host = 'smtp.gmail.com';
-            $username = 'blaclock@gmail.com'; // example@gmail.com
-            $password = 'dfzynjllhobfuudc';
+            $mail = new PHPMailer(true);
 
-            //差出人
-            $from = 'blaclock@gmail.com';
-            $fromname = '黒岩知宏';
+            try {
+                //Gmail 認証情報
+                $host = 'smtp.gmail.com';
+                $username = 'blaclock@gmail.com'; // example@gmail.com
+                $password = 'dfzynjllhobfuudc';
 
-            //宛先
-            $to = $email;
-            $toname = '宛名';
+                //差出人
+                $from = 'blaclock@gmail.com';
+                $fromname = '黒岩知宏';
 
-            //件名・本文
-            $subject = 'パスワード確認';
-            $body = 'あなたのパスワードは、' . $yourPassword . 'です。';
+                //宛先
+                $to = $email;
+                $toname = '宛名';
 
-            //メール設定
-            $mail->SMTPDebug = 2; //デバッグ用
-            $mail->isSMTP();
-            $mail->SMTPAuth = true;
-            $mail->Host = $host;
-            $mail->Username = $username;
-            $mail->Password = $password;
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
-            $mail->CharSet = "utf-8";
-            $mail->Encoding = "base64";
-            $mail->setFrom($from, $fromname);
-            $mail->addAddress($to, $toname);
-            $mail->Subject = $subject;
-            $mail->Body    = $body;
+                //件名・本文
+                $subject = 'パスワード確認';
+                $body = 'あなたのパスワードは、' . $yourPassword . 'です。';
 
-            //メール送信
-            $mail->send();
+                //メール設定
+                $mail->SMTPDebug = 2; //デバッグ用
+                $mail->isSMTP();
+                $mail->SMTPAuth = true;
+                $mail->Host = $host;
+                $mail->Username = $username;
+                $mail->Password = $password;
+                $mail->SMTPSecure = 'tls';
+                $mail->Port = 587;
+                $mail->CharSet = "utf-8";
+                $mail->Encoding = "base64";
+                $mail->setFrom($from, $fromname);
+                $mail->addAddress($to, $toname);
+                $mail->Subject = $subject;
+                $mail->Body    = $body;
 
-            header('Location: ' . '/login');
-        } catch (Exception $e) {
-            echo '失敗: ', $mail->ErrorInfo;
+                //メール送信
+                $mail->send();
+
+                header('Location: ' . '/login');
+            } catch (Exception $e) {
+                echo '失敗: ', $mail->ErrorInfo;
+            }
+        } else {
+            $errMessage['email']['unique'] = '入力されたメールアドレスは登録されていません';
+            var_dump($errMessage);
+            $this->view(
+                'auth.login.confirm_password',
+                [
+                    'errMessage' => $errMessage
+                ]
+            );
         }
     }
 }

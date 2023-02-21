@@ -61,69 +61,6 @@ class CustomerController extends Controller
         );
     }
 
-    public function confirm()
-    {
-        if (!$this->request->isPost()) {
-            throw new HttpNotFoundException();
-        }
-
-        // Productモデルのインスタンスを取得
-        $customer = $this->model->get('Product');
-        // カテゴリー一覧を取得
-        $categories = $customer->categories;
-
-        $mode = $_POST['send'];
-        switch ($mode) {
-            case \App\consts\CommonConst::REGISTER_CONFIRM:
-                // 登録確認が押された場合
-                // Formで送信された値をチェックする
-                $validation = new Validation();
-                list($isError, $errMessage) = $validation->validateForm([
-                    'name' => 'required',
-                    'price' => 'required|num',
-                    'detail' => 'required'
-                ]);
-
-                // var_dump($errMessage);
-                // var_dump($isError);
-
-                if ($isError) {
-                    $this->view(
-                        '$customers.create',
-                        [
-                            '$customerData' => $_POST,
-                            'categories' => $categories,
-                            'errMessage' => $errMessage
-                        ]
-                    );
-                } else {
-                    $this->view(
-                        '$customers.confirm',
-                        [
-                            '$customerData' => $_POST,
-                        ]
-                    );
-                }
-
-                break;
-            case \App\consts\CommonConst::REGISTER_BACK:
-                // 戻るを押された場合
-                $this->view(
-                    '$customers.create',
-                    [
-                        '$customerData' => $_POST,
-                        'categories' => $categories
-                    ]
-                );
-                break;
-            case \App\consts\CommonConst::REGISTER_COMPLETE:
-                // 登録完了を押された場合
-                break;
-            default:
-                break;
-        }
-    }
-
     public function store()
     {
         if (!$this->request->isPost()) {
@@ -139,11 +76,22 @@ class CustomerController extends Controller
                 // Formで送信された値をチェックする
                 $validation = new Validation();
                 list($isError, $errMessage) = $validation->validateForm([
-                    'email' => 'required|email',
+                    'family_name' => 'required',
+                    'first_name' => 'required',
+                    'family_name_kana' => 'required',
+                    'first_name_kana' => 'required',
+                    'account_name' => 'required',
+                    'sex' => 'radio',
+                    'birth' => 'required',
+                    'email' => 'required|email|unique:customers',
+                    'tel' => 'required|tel|unique:customers',
+                    'zip' => 'required|zip',
+                    'address' => 'required',
+                    'password' => 'required|password',
+                    'password_confirm' => 'required|password'
                 ]);
 
                 if ($isError) {
-                    // var_dump($errMessage);
                     // var_dump($_POST);
                     $this->view(
                         'customers.create',

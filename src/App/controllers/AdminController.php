@@ -41,7 +41,7 @@ class AdminController extends Controller
     public function login()
     {
         if (isset($_SESSION['admin'])) {
-            header('Location: ' . '/mypage');
+            header('Location: ' . '/admin');
         } else {
             $this->view(
                 'admins.login',

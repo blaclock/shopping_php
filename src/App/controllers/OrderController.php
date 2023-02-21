@@ -16,11 +16,13 @@ class OrderController extends Controller
             $customer_id = $_SESSION['customer']['id'];
             $order = $this->model->get('Order');
             // 注文履歴データを取得
-            $orders = $order->getOrderData($customer_id);
+            list($orders, $orderNum, $paginationInfo) = $order->getOrderData($customer_id);
             $this->view(
                 'orders.index',
                 [
-                    "orders" => $orders
+                    "orders" => $orders,
+                    "orderNum" => $orderNum,
+                    "pagination" => $paginationInfo,
                 ]
             );
         } else {
@@ -36,6 +38,32 @@ class OrderController extends Controller
     {
     }
 
+    public function confirm()
+    {
+        if (!$this->request->isPost()) {
+            throw new HttpNotFoundException();
+        }
+
+        if (\App\models\Auth::check()) {
+            if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
+                unset($_SESSION['token']);
+                $customer_id = $_SESSION['customer']['id'];
+                $order = $this->model->get('Order');
+                // 注文データを格納
+                $order->addOrder($customer_id);
+
+                // カートから注文され商品を削除する
+                $cart_id = $_POST['cart_id'];
+                $this->model->get('Cart')->orderedCart($cart_id);
+                header('Location: ' . '/mypage/orders');
+            } else {
+                header('Location: ' . '/cart');
+            }
+        } else {
+            header('Location: ' . '/login');
+        }
+    }
+
     public function store()
     {
         if (!$this->request->isPost()) {
@@ -45,16 +73,13 @@ class OrderController extends Controller
         if (\App\models\Auth::check()) {
             if (isset($_POST['token']) &&  isset($_SESSION['token']) && $_POST['token'] === $_SESSION['token']) {
                 unset($_SESSION['token']);
-
                 $customer_id = $_SESSION['customer']['id'];
-                $product_id = $_POST['product_id'];
-                $quantity = $_POST['quantity'];
-                $cart_id = $_POST['cart_id'];
-
                 $order = $this->model->get('Order');
-                // 購入データを格納
-                $order->addOrder($customer_id, $product_id, $quantity);
-                // カートから購入され商品を削除する
+                // 注文データを格納
+                $order->addOrder($customer_id);
+
+                // カートから注文され商品を削除する
+                $cart_id = $_POST['cart_id'];
                 $this->model->get('Cart')->orderedCart($cart_id);
                 header('Location: ' . '/mypage/orders');
             } else {

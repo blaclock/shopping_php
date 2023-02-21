@@ -386,3 +386,187 @@ INSERT INTO order_details (order_id, product_id, quantity)
 VALUES (1, 26, 2);
 INSERT INTO order_details (order_id, product_id, quantity)
 VALUES (1, 11, 5);
+-- お問い合わせテーブル
+CREATE TABLE contacts (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  customer_id INT NOT NULL,
+  admin_id INT NOT NULL,
+  sender varchar(20) NOT NULL,
+  message text NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  deleted_at TIMESTAMP,
+  delete_flg TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  FOREIGN KEY cus_tbl(customer_id) REFERENCES customers(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY adm_tbl(admin_id) REFERENCES admins(id) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4;
+-- メッセージ挿入
+INSERT INTO contacts (customer_id, admin_id, sender, message)
+VALUES (1, 1, 'customer', 'テストです');
+INSERT INTO contacts (customer_id, admin_id, sender, message)
+VALUES (2, 1, 'customer', '2人目です');
+INSERT INTO contacts (customer_id, admin_id, sender, message)
+VALUES (2, 1, 'admin', 'テスト2人目の返信です');
+INSERT INTO contacts (customer_id, admin_id, sender, message)
+VALUES (1, 1, 'customer', 'テスト２通目です');
+INSERT INTO contacts (customer_id, admin_id, sender, message)
+VALUES (1, 1, 'admin', 'テスト２通目の返信です');
+-- CSVインポート
+LOAD DATA INFILE '/tmp/products2.csv' INTO TABLE products FIELDS TERMINATED BY ',' LINES TERMINATED BY "\r\n" IGNORE 1 LINES (@1, @2, @3, @4, @5)
+SET name = @1,
+  detail = @2,
+  price = @3,
+  image = @4,
+  category_id = @5;
+-- CSVエクスポート
+select *
+from products into outfile '/tmp/products_export.csv' fields terminated by ',' enclosed by '"' escaped by '"' lines terminated by '\r\n';
+-- GRANT
+grant all on test_database.* to test_user identified by 'pass' with
+grant option;
+-- test_database
+SELECT t1.id,
+  t1.name,
+  t1.image,
+  t1.price,
+  t1.category_id,
+  t1.category,
+  t1.score,
+  t1.reviews,
+  count(pf.product_id) as likes
+FROM (
+    SELECT p.id,
+      p.name,
+      p.image,
+      p.price,
+      p.category_id,
+      c.name as category,
+      avg(r.score) as score,
+      count(r.product_id) as reviews
+    FROM products as p
+      INNER JOIN categories as c ON p.category_id = c.id
+      LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+    group by p.id
+  ) AS t1
+  left outer join product_favorites as pf on t1.id = pf.product_id
+group by t1.id;
+-- 検索SQL
+select t1.id,
+  t1.name,
+  t1.image,
+  t1.price,
+  t1.category_id,
+  t1.category,
+  t1.created_at,
+  t1.updated_at,
+  t1.score,
+  t1.reviews,
+  count(pf.product_id) as likes
+from (
+    SELECT p.id,
+      p.name,
+      p.image,
+      p.price,
+      p.detail,
+      p.category_id,
+      p.created_at,
+      p.updated_at,
+      c.name as category,
+      avg(r.score) as score,
+      count(r.product_id) as reviews
+    FROM products as p
+      INNER JOIN categories as c ON p.category_id = c.id
+      LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+    group by p.id
+  ) AS t1
+  left outer join product_favorites as pf on t1.id = pf.product_id
+group by t1.id;
+-- 検索テスト カウント
+select *
+from (
+    SELECT t1.id,
+      t1.name,
+      t1.image,
+      t1.price,
+      t1.category_id,
+      t1.category,
+      t1.created_at,
+      t1.updated_at,
+      t1.score,
+      t1.reviews,
+      count(pf.product_id) as likes
+    from (
+        SELECT p.id,
+          p.name,
+          p.image,
+          p.price,
+          p.detail,
+          p.category_id,
+          p.created_at,
+          p.updated_at,
+          c.name as category,
+          avg(r.score) as score,
+          count(r.product_id) as reviews
+        FROM products as p
+          INNER JOIN categories as c ON p.category_id = c.id
+          LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+        group by p.id
+      ) AS t1
+      left outer join product_favorites as pf on t1.id = pf.product_id
+    GROUP BY t1.id
+  ) as t2;
+-- 検索条件追加
+select *
+from (
+    SELECT t1.id,
+      t1.name,
+      t1.image,
+      t1.price,
+      t1.category_id,
+      t1.category,
+      t1.detail,
+      t1.created_at,
+      t1.updated_at,
+      t1.score,
+      t1.reviews,
+      count(pf.product_id) as likes
+    from (
+        SELECT p.id,
+          p.name,
+          p.image,
+          p.price,
+          p.detail,
+          p.category_id,
+          p.created_at,
+          p.updated_at,
+          c.name as category,
+          avg(r.score) as score,
+          count(r.product_id) as reviews
+        FROM products as p
+          INNER JOIN categories as c ON p.category_id = c.id
+          LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+        group by p.id
+      ) AS t1
+      left outer join product_favorites as pf on t1.id = pf.product_id
+    GROUP BY t1.id
+  ) as t2
+where t2.category = '飲料';
+-- Backup
+(
+  SELECT p.id,
+    p.name,
+    p.image,
+    p.price,
+    p.category_id,
+    p.created_at,
+    p.updated_at,
+    c.name as category,
+    avg(r.score) as score,
+    count(r.product_id) as reviews
+  FROM products as p
+    INNER JOIN categories as c ON p.category_id = c.id
+    LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+  group by p.id
+) AS t1
+left outer join product_favorites as pf on t1.id = pf.product_id EOM;
+$col = ' t1.id,t1.name,t1.image,t1.price,t1.category_id,t1.category,t1.created_at,t1.updated_at,t1.score,t1.reviews,count(pf.product_id) as likes ';

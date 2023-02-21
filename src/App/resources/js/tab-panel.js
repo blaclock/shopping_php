@@ -1,9 +1,10 @@
 
 // タブに対してクリックイベントを適用
-const tabs = document.getElementsByClassName('tab');
-for (let i = 0; i < tabs.length; i++) {
-  tabs[i].addEventListener('click', tabSwitch);
-}
+let tabs = document.getElementsByClassName('tab');
+tabs = Array.from(tabs);
+tabs.forEach(element => {
+  element.addEventListener('click', tabSwitch);
+});
 
 // タブをクリックすると実行する関数
 function tabSwitch() {

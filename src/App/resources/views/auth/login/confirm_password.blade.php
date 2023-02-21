@@ -9,10 +9,17 @@
                     <p class="mb-4 text-red-500">メールアドレス、もしくはパスワードに誤りがあります。</p>
                 @endif
                 <form action="/password/send" method="post" class="mx-auto">
-                    <div class="flex items-center mb-6">
+                    <div class="flex items-center mb-2">
                         <label for="email" class="w-1/3">メールアドレス</label>
                         <input type="email" name="email" id="email" value="{{ $email }}"
                             class="w-2/3 h-8 px-2 border border-gray-500">
+                    </div>
+                    <div class="mb-6">
+                        @if (isset($errMessage['email']))
+                            @foreach ($errMessage['email'] as $error)
+                                <p class="text-red-400">{{ $error }}</p>
+                            @endforeach
+                        @endif
                     </div>
                     <div class="text-center">
                         <button type="submit" value="ログイン"

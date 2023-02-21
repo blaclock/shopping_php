@@ -5,37 +5,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible"content="IE=edge">
     <meta name="viewport"content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
     <link rel="stylesheet"href="{{ App\consts\CommonConst::CSS_PATH }}output.css">
+    <link rel="stylesheet"href="{{ App\consts\CommonConst::CSS_PATH }}style.css">
     <link rel="stylesheet"href="{{ App\consts\CommonConst::CSS_PATH }}header_menu.css">
     @stack('css')
     <title>Document</title>
 </head>
 
 <body>
-    @include('components.header')
+    @component('components.header', [
+        'headerBgColor' => 'gray-700',
+        'headerBgColorSp' => 'gray-700',
+        'headerTextColor' => 'white',
+        'headerTextColorSp' => 'white',
+        'user' => 'admin',
+    ])
+    @endcomponent
 
     <div class="flex bg-gray-50 min-h-screen">
         {{-- sidebar --}}
-        <ul class="sidebar py-20 w-1/6 flex flex-col px-4 bg-gray-200">
-            <a href="{{ App\consts\CommonConst::APP_URL }}admin/detail"
-                class="p-4 mb-4 w-11/12 mx-auto border border-gray-300 hover:bg-gray-100 bg-white">
-                <span>登録情報</span>
+        <ul class="sidebar hidden w-[200px] md:flex flex-col bg-gray-700">
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin" class="p-4 text-white hover:bg-gray-600">
+                <span>トップ</span>
             </a>
-            <a href="{{ App\consts\CommonConst::APP_URL }}admin/customers"
-                class="p-4 mb-4 w-11/12 mx-auto border border-gray-300 hover:bg-gray-100 bg-white">
-                <span>顧客情報管理</span>
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/admins/top" class="p-4 text-white hover:bg-gray-600">
+                <span>管理者情報</span>
             </a>
-            <a href="{{ App\consts\CommonConst::APP_URL }}admin/products"
-                class="p-4 mb-4 w-11/12 mx-auto border border-gray-300 hover:bg-gray-100 bg-white">
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/customers/top" class="p-4 text-white hover:bg-gray-600">
+                <span>顧客管理</span>
+            </a>
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/products/top" class="p-4 text-white hover:bg-gray-600">
                 <span>商品管理</span>
             </a>
-            <a href="{{ App\consts\CommonConst::APP_URL }}admin/orders"
-                class="p-4 w-11/12 mx-auto border border-gray-300 hover:bg-gray-100 bg-white">
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/orders/top" class="p-4 text-white hover:bg-gray-600">
                 <span>注文履歴</span>
             </a>
         </ul>
         {{-- main contents --}}
-        <div class="px-5 py-20 mx-auto w-5/6">
+        <div class="container px-5 py-20 mx-auto w-full md:w-5/6">
             @yield('content')
         </div>
     </div>

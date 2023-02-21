@@ -21,5 +21,6 @@ services:
     volumes:
       - ./docker/db/my.cnf:/etc/mysql/my.cnf
       - ./docker/db/mysql_data:/var/lib/mysql
+      - ./src/App/resources/csv:/tmp
     env_file:
       - ./docker/db/db-variables.env

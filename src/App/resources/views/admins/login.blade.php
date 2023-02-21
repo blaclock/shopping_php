@@ -4,7 +4,7 @@
     <section class="text-gray-600 body-font">
         <div>
             <div class="mx-auto mt-8 lg:w-120 p-8 border border-gray-300">
-                <h5 class="mb-8 text-center font-bold">ログイン</h5>
+                <h5 class="mb-8 text-center font-bold">管理者ログイン</h5>
                 @if (isset($loginError))
                     <p class="mb-4 text-red-500">メールアドレス、もしくはパスワードに誤りがあります。</p>
                 @endif

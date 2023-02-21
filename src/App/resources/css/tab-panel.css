@@ -5,12 +5,19 @@
 
 .tab {
   flex-grow: 1;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   list-style: none;
   background-color: lightgray;
   text-align: center;
   cursor: pointer;
+}
+
+@media screen and (min-width:767px) {
+  .tab {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
 }
 
 .tab:hover {
@@ -22,7 +29,7 @@
 }
 
 .panel-group {
-  background: whitesmoke;
+  background-color: rgb(243 244 246);
 }
 
 .panel {

@@ -10,3 +10,13 @@
   transform: translateX(-50%);
   background: snow;
 }
+
+#datepicker {
+  position: relative;
+  background-color: rebeccapurple;
+}
+
+/* input[type=date] {
+  position: relative;
+  background-color: rebeccapurple;
+} */
