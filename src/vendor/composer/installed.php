@@ -3,7 +3,7 @@
         'name' => 'root/html',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'a8adabedeb12b51732801fc28511ebba044a5ca6',
+        'reference' => 'd509e052574714a410f0cbdf4e0aff7b0f919745',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -217,7 +217,7 @@
         'root/html' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'a8adabedeb12b51732801fc28511ebba044a5ca6',
+            'reference' => 'd509e052574714a410f0cbdf4e0aff7b0f919745',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -375,6 +375,15 @@
             'install_path' => __DIR__ . '/../squizlabs/php_codesniffer',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'stripe/stripe-php' => array(
+            'pretty_version' => 'v10.6.0',
+            'version' => '10.6.0.0',
+            'reference' => '5fc46f43c743c715cb5edeb7be3383efb7b4bb2e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../stripe/stripe-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'symfony/config' => array(
             'pretty_version' => 'v6.2.0',

@@ -3,6 +3,7 @@
 namespace App\models;
 
 use \HttpNotFoundException;
+use App\core\CSV as CSV;
 
 class Product extends Model
 {
@@ -14,8 +15,55 @@ class Product extends Model
         $res = $this->db->select($table, $col);
         return $res;
     }
-    // 商品リストを取得する
 
+    public function getTop5()
+    {
+        $table = <<<EOM
+(
+SELECT t1.id,
+t1.name,
+t1.image,
+t1.price,
+t1.category_id,
+t1.category,
+t1.detail,
+t1.created_at,
+t1.updated_at,
+t1.score,
+t1.reviews,
+t1.delete_flag,
+count(pf.product_id) AS likes
+from (
+SELECT p.id,
+p.name,
+p.image,
+p.price,
+p.detail,
+p.category_id,
+p.created_at,
+p.updated_at,
+p.delete_flag,
+c.name AS category,
+avg(r.score) AS score,
+count(r.product_id) AS reviews
+FROM products AS p
+INNER JOIN categories AS c ON p.category_id = c.id
+LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+GROUP BY p.id
+) AS t1
+LEFT OUTER JOIN product_favorites AS pf on t1.id = pf.product_id
+GROUP BY t1.id
+) AS t2
+EOM;
+        $col = ' t2.id,t2.name,t2.image,t2.price,t2.category_id,t2.category,t2.created_at,t2.updated_at,t2.score,t2.reviews,t2.likes ';
+        $where = ' t2.delete_flag = ? ';
+        $arrVal = [0];
+        $this->db->setOrder(' t2.likes DESC ');
+        $this->db->setLimitOff(5);
+        $res = $this->db->select($table, $col, $where, $arrVal);
+        return ($res) ? $res : false;
+    }
+    // 商品リストを取得する
     public function getProductList()
     {
         // カテゴリーによって表示させるアイテムをかえる
@@ -35,6 +83,7 @@ t1.created_at,
 t1.updated_at,
 t1.score,
 t1.reviews,
+t1.delete_flag,
 count(pf.product_id) AS likes
 from (
 SELECT p.id,
@@ -45,6 +94,7 @@ p.detail,
 p.category_id,
 p.created_at,
 p.updated_at,
+p.delete_flag,
 c.name AS category,
 avg(r.score) AS score,
 count(r.product_id) AS reviews
@@ -58,17 +108,15 @@ GROUP BY t1.id
 ) AS t2
 EOM;
         $col = ' t2.id,t2.name,t2.image,t2.price,t2.category_id,t2.category,t2.created_at,t2.updated_at,t2.score,t2.reviews,t2.likes ';
-        $where = ($category_id !== '') ? ' t2.category_id = ? ' : '';
-        $arrVal = ($category_id !== '') ? [$category_id] : [];
-        $this->setFilterCondition($where, $arrVal);
+        $where = ($category_id !== '') ? ' t2.category_id = ? AND t2.delete_flag = ? ' : ' t2.delete_flag = ? ';
+        $arrVal = ($category_id !== '') ? [$category_id, 0] : [0];
+        $this->setFilterCondition($where, $arrVal, 't2');
         // 商品数を取得
         $productNum = $this->db->count($table, $where, $arrVal);
         // var_dump($productNum);
         // ページネーション
         $paginationInfo = $this->setPagination($productNum);
 
-        // 絞り込み条件を設定
-        $this->setFilterCondition($where, $arrVal);
         // 検索結果の抽出順を指定
         $this->db->setOrder($this->setSortCondition('t2'));
         // $this->db->setGroupBy('t1.id');
@@ -82,21 +130,39 @@ EOM;
         }
     }
 
-    private function setFilterCondition(&$where, &$arrVal)
+    private function setFilterCondition(&$where, &$arrVal, $table = 't1')
     {
-        if (!empty($_GET['period_beginning'])) {
-            if (!empty($_GET['category_id'])) {
-                $where .= 'AND';
-            }
-            $where .= ' created_at >= ? ';
-            $arrVal[] = $_GET['period_beginning'];
+        if ($where !== '') {
+            $where .= 'AND';
         }
-        if (!empty($_GET['period_ending'])) {
-            if (!empty($_GET['period_beginning'])) {
-                $where .= 'AND';
+
+        foreach ($_GET as $column => $param) {
+            if (!empty($param)) {
+                switch ($column) {
+                    case 'price_low':
+                        $where .=  ' ' . $table . '.price >= ? AND';
+                        $arrVal[] = $param;
+                        break;
+                    case 'price_high':
+                        $where .=  ' ' . $table . '.price <= ? AND';
+                        $arrVal[] = $param;
+                        break;
+                    case 'score_filter':
+                        $where .=  ' ' . $table . '.score >= ? AND';
+                        $arrVal[] = $param;
+                        break;
+                    case 'category_filter':
+                        $where .=  ' ' . $table . '.category = ? AND';
+                        $arrVal[] = $param;
+                        break;
+                    default:
+                        break;
+                }
             }
-            $where .= ' created_at <= ? ';
-            $arrVal[] = $_GET['period_ending'] . ' 23:59:59 ';;
+        }
+
+        if ($where !== '') {
+            $where = substr($where, 0, -3);
         }
     }
 
@@ -147,6 +213,7 @@ t1.created_at,
 t1.updated_at,
 t1.score,
 t1.reviews,
+t1.delete_flag,
 count(pf.product_id) AS likes
 from (
 SELECT p.id,
@@ -157,6 +224,7 @@ p.detail,
 p.category_id,
 p.created_at,
 p.updated_at,
+p.delete_flag,
 c.name AS category,
 avg(r.score) AS score,
 count(r.product_id) AS reviews
@@ -183,12 +251,16 @@ EOM;
                 if (mb_substr($word, 0, 1) === '-') {
                     list($where, $word) = $this->notSearch($word);
                 } else {
-                    $where = " t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ? ";
+                    $where = " (t2.name = ? OR t2.detail LIKE ? OR t2.price = ? OR t2.category = ?) ";
                 }
 
                 $arrVal = [$word, '%' . $word . '%', $word, $word];
             }
         }
+        $this->setFilterCondition($where, $arrVal, 't2');
+        $where .= ' AND t2.delete_flag = ? ';
+        $arrVal[] = 0;
+
         // 商品数を取得
         $productNum = $this->db->count($table, $where, $arrVal);
         // ページネーション
@@ -196,7 +268,6 @@ EOM;
 
         // 検索結果の抽出順を指定
         $this->db->setOrder($this->setSortCondition('t2'));
-
 
         // SELECT構文で検索
         $res = $this->db->select($table, $col, $where, $arrVal);
@@ -304,12 +375,93 @@ EOM;
 
     public function deleteProduct($product_id)
     {
-        $product = $this->getProductDetailData($product_id);
         $table = ' products ';
+        // 削除時間を取得
+        $deleted_time = date('Y-m-d H:i:s');
+        $insData = [
+            'delete_flag' => 1,
+            'deleted_at' => $deleted_time
+        ];
         $where = ' id = ? ';
-        $res = $this->db->delete($table, $where, [$product_id]);
-        if ($res !== false) {
-            unlink(\App\consts\CommonConst::IMG_DIR . 'products/' . $product['image']);
+        $arrVal = [$product_id];
+        $res = $this->db->update($table, $insData, $where, $arrVal);
+
+        // 画像の削除
+        // $product = $this->getProductDetailData($product_id);
+        // if ($res !== false) {
+        //     unlink(\App\consts\CommonConst::IMG_DIR . 'products/' . $product['image']);
+        // }
+    }
+
+    public function exportCSV()
+    {
+        $table = <<<EOM
+(
+SELECT t1.id,
+t1.name,
+t1.image,
+t1.price,
+t1.category_id,
+t1.category,
+t1.detail,
+t1.created_at,
+t1.updated_at,
+t1.score,
+t1.reviews,
+count(pf.product_id) AS likes
+from (
+SELECT p.id,
+p.name,
+p.image,
+p.price,
+p.detail,
+p.category_id,
+p.created_at,
+p.updated_at,
+c.name AS category,
+avg(r.score) AS score,
+count(r.product_id) AS reviews
+FROM products AS p
+INNER JOIN categories AS c ON p.category_id = c.id
+LEFT OUTER JOIN reviews AS r ON p.id = r.product_id
+GROUP BY p.id
+) AS t1
+LEFT OUTER JOIN product_favorites AS pf on t1.id = pf.product_id
+GROUP BY t1.id
+) AS t2
+EOM;
+        $col = ' t2.id,t2.name,t2.image,t2.price,t2.category_id,t2.category,t2.detail,t2.created_at,t2.updated_at,t2.score,t2.reviews,t2.likes ';
+
+        // SELECT構文で検索
+        $res = $this->db->select($table, $col);
+        if ($res === false) {
+            echo 'ファイルのエクスポートに失敗しました<br>';
+        } else {
+            $list = [
+                [
+                    'id',
+                    '商品名',
+                    '画像',
+                    '価格',
+                    'カテゴリーID',
+                    'カテゴリー名',
+                    '商品詳細',
+                    '登録日',
+                    '更新日',
+                    '評価',
+                    'レビュー数',
+                    'いいね数'
+                ]
+            ];
+            foreach ($res as $rec) {
+                $data = [];
+                foreach ($rec as $val) {
+                    $data[] = $val;
+                }
+                // var_dump($data);
+                $list[] = $data;
+            }
+            CSV::export($list);
         }
     }
 }

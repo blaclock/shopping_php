@@ -35,6 +35,7 @@ class ComposerStaticInita418e36638742e9df30a61ba14d8228f
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\DependencyInjection\\' => 38,
             'Symfony\\Component\\Config\\' => 25,
+            'Stripe\\' => 7,
         ),
         'P' => 
         array (
@@ -102,6 +103,10 @@ class ComposerStaticInita418e36638742e9df30a61ba14d8228f
         'Symfony\\Component\\Config\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
+        ),
+        'Stripe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
         'Psr\\Log\\' => 
         array (

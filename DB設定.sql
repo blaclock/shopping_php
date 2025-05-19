@@ -16,7 +16,7 @@ CREATE TABLE customers (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  delet_flag TINYINT UNSIGNED NOT NULL DEFAULT 0
+  delete_flag TINYINT UNSIGNED NOT NULL DEFAULT 0
 ) CHARACTER SET utf8mb4;
 -- 顧客データを格納
 INSERT INTO customers (
@@ -62,7 +62,7 @@ CREATE TABLE admins (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  delet_flag TINYINT UNSIGNED NOT NULL DEFAULT 0
+  delete_flag TINYINT UNSIGNED NOT NULL DEFAULT 0
 ) CHARACTER SET utf8mb4;
 -- 管理者データ挿入
 INSERT INTO admins (
@@ -123,7 +123,7 @@ CREATE TABLE products (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP,
   deleted_at TIMESTAMP,
-  delet_flag TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  delete_flag TINYINT UNSIGNED NOT NULL DEFAULT 0,
   -- インデックス ： データの検索速度を向上させるために 、 どの行がどこにあるかを示した索引のこと
   INDEX PRODUCTS_IDX(category_id)
 ) CHARACTER SET utf8mb4;
@@ -570,3 +570,8 @@ where t2.category = '飲料';
 ) AS t1
 left outer join product_favorites as pf on t1.id = pf.product_id EOM;
 $col = ' t1.id,t1.name,t1.image,t1.price,t1.category_id,t1.category,t1.created_at,t1.updated_at,t1.score,t1.reviews,count(pf.product_id) as likes ';
+WHERE t2.name = '飲料'
+  OR t2.detail LIKE '%飲料%'
+  OR t2.price = '飲料'
+  OR t2.category = '飲料'
+  AND t2.created_at >= '飲料'

@@ -33,7 +33,7 @@ class PDODatabase
                 case 'mysql':
                     $dsn = 'mysql:host=' . $db_host . ';dbname=' . $db_name;
                     $dbh = new \PDO($dsn, $db_user, $db_pass);
-                    $dbh->query('SET NAMES utf8');
+                    $dbh->query('SET NAMES utf8mb4');
                     break;
                 case 'pgsql':
                     $dsn =
@@ -151,39 +151,6 @@ class PDODatabase
         $sql = ' SELECT ' . $columnKey . ' FROM ' . $table . $whereSQL . $other;
         return $sql;
     }
-    private function getSql2($type, $tables, $where = '', $column = '')
-    {
-        switch ($type) {
-            case 'select':
-                $columnKey[] = ($column !== '') ? $column : '*';
-                break;
-
-            case 'count':
-                $columnKey[] = 'COUNT(*) AS NUM ';
-                break;
-
-            default:
-                break;
-        }
-
-        $whereSQL = ($where !== '') ? ' WHERE ' . $where : '';
-        $other =
-            $this->groupby .
-            ' ' .
-            $this->order .
-            ' ' .
-            $this->limit .
-            ' ' .
-            $this->offset;
-        // sql文の作成
-
-        $sql = '';
-        for ($i = 0; $i < count($tables); $i++) {
-            $sql .= ' SELECT ' . $columnKey[$i] . ' FROM ' . $tables[$i];
-        }
-        $sql .= $whereSQL . $other;
-        return $sql;
-    }
 
     public function insert($table, $insData = [])
     {
@@ -272,17 +239,17 @@ class PDODatabase
         return $res;
     }
 
-    public function export($table, $filePath)
-    {
-        $sql = " SELECT * FROM {$table} INTO OUTFILE '{$filePath}' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED by '\"' lines terminated by '\\r\\n' ";
-        $stmt = $this->dbh->prepare($sql);
-        $res = $stmt->execute([]);
+    // public function export($table, $filePath)
+    // {
+    //     $sql = " SELECT * FROM {$table} INTO OUTFILE '{$filePath}' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED by '\"' lines terminated by '\\r\\n' ";
+    //     $stmt = $this->dbh->prepare($sql);
+    //     $res = $stmt->execute([]);
 
-        if ($res === false) {
-            $this->catchError($stmt->errorInfo());
-        }
-        return $res;
-    }
+    //     if ($res === false) {
+    //         $this->catchError($stmt->errorInfo());
+    //     }
+    //     return $res;
+    // }
 
     public function getLastId()
     {

@@ -63,10 +63,10 @@ class Application
     {
         // ルーティングのパターンを登録
         return [
-            '/' => ['controller' => 'Product', 'action' => 'index'],
+            '/' => ['controller' => 'Product', 'action' => 'top'],
             // 商品表示
-            '/products\?q=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'search'],
-            '/products[\?category_id=\d+]*[\&*\?*period_beginning=[0-9\-]*]*[\&*\?*period_ending=[0-9\-]*]*[\&sort=[a-zA-Z\_]*]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'index'],
+            '/products\?q=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*[\&*\?*price_low=[0-9\-]*]*[\&*\?*price_high=[0-9\-]*]*[\&*\?*score_filter=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*]*[\&*\?*category_filter=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*[\&sort=[a-zA-Z\_]*]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'search'],
+            '/products[\?category_id=\d+]*[\&*\?*price_low=[0-9\-]*]*[\&*\?*price_high=[0-9\-]*]*[\&*\?*score_filter=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*]*[\&*\?*category_filter=[0-9０-９a-zA-Zぁ-んーァ-ヶー一-龠\-\|\s]*[\&sort=[a-zA-Z\_]*]*[\&page=\d+]*' => ['controller' => 'Product', 'action' => 'index'],
             '/product\?id=\d+' => ['controller' => 'Product', 'action' => 'show'],
             // レビュー
             '/product/review\?product_id=\d+' => ['controller' => 'Review', 'action' => 'create'],
@@ -87,6 +87,7 @@ class Application
             // マイページ
             '/mypage' => ['controller' => 'Customer', 'action' => 'top'],
             '/register' => ['controller' => 'Customer', 'action' => 'create'],
+            '/postcode\?zip=[0-9\-]+' => ['controller' => 'Customer', 'action' => 'searchPostcode'],
             '/register/confirm' => ['controller' => 'Customer', 'action' => 'store'],
             '/mypage/detail' => ['controller' => 'Customer', 'action' => 'show'],
             '/mypage/edit' => ['controller' => 'Customer', 'action' => 'edit'],
@@ -99,7 +100,7 @@ class Application
             // 購入履歴
             '/mypage/orders[\?period_beginning=[0-9a-zA-Z\-]*]*[\?*\*&period_ending=[0-9a-zA-Z\-]*]*[\&page=\d+]*' => ['controller' => 'Order', 'action' => 'index'],
             '/mypage/orders/confirm' => ['controller' => 'Order', 'action' => 'confirm'],
-            '/mypage/orders/complete' => ['controller' => 'Order', 'action' => 'store'],
+            '/mypage/orders/checkout' => ['controller' => 'Order', 'action' => 'store'],
             // お問い合わせ履歴
             '/mypage/contact' => ['controller' => 'Contact', 'action' => 'index'],
             '/mypage/contact/send' => ['controller' => 'Contact', 'action' => 'send'],
@@ -110,14 +111,18 @@ class Application
             '/admin/login' => ['controller' => 'Admin', 'action' => 'login'],
             '/admin/login/confirm' => ['controller' => 'Admin', 'action' => 'confirm'],
             '/admin/logout' => ['controller' => 'Admin', 'action' => 'logout'],
+            // 管理者管理
+            '/admin/admins/top' => ['controller' => 'Admin/Admin', 'action' => 'top'],
+            '/admin/admins' => ['controller' => 'Admin/Admin', 'action' => 'index'],
+            '/admin/admins\?id=\d+' => ['controller' => 'Admin/Admin', 'action' => 'show'],
             // 顧客管理
             '/admin/customers/top' => ['controller' => 'Admin/Customer', 'action' => 'top'],
-            '/admin/customers' => ['controller' => 'Admin/Customer', 'action' => 'index'],
+            '/admin/customers[\?page=\d+]*' => ['controller' => 'Admin/Customer', 'action' => 'index'],
             '/admin/customers\?id=\d+' => ['controller' => 'Admin/Customer', 'action' => 'show'],
             '/admin/customers/delete\?customer_id=\d+' => ['controller' => 'Admin/Customer', 'action' => 'destroy'],
             // 注文管理
             '/admin/orders/top' => ['controller' => 'Admin/Order', 'action' => 'top'],
-            '/admin/orders[\?period_beginning=[0-9\-]*]*[\&period_ending=[0-9\-]*]*' => ['controller' => 'Admin/Order', 'action' => 'index'],
+            '/admin/orders[\?period_beginning=[0-9\-]*]*[\&period_ending=[0-9\-]*]*[\&page=\d+]*' => ['controller' => 'Admin/Order', 'action' => 'index'],
             // 商品
             '/admin/products/top' => ['controller' => 'Admin/Product', 'action' => 'top'],
             '/admin/products[\?category_id=\d+]*[\&page=\d+]*' => ['controller' => 'Admin/Product', 'action' => 'index'],
@@ -131,14 +136,14 @@ class Application
             '/admin/product/update\?id=\d+' => ['controller' => 'Admin/Product', 'action' => 'update'],
             '/admin/product/update' => ['controller' => 'Admin/Product', 'action' => 'update'],
             // お問い合わせ履歴
-            '/admin/contact' => ['controller' => 'Admin/Contact', 'action' => 'index'],
+            '/admin/contacts' => ['controller' => 'Admin/Contact', 'action' => 'index'],
             '/admin/contact\?customer_id=\d+' => ['controller' => 'Admin/Contact', 'action' => 'show'],
             '/admin/contact/send' => ['controller' => 'Admin/Contact', 'action' => 'send'],
             // CSVインポート・エクスポート
             '/admin/csv_import\?data=[a-zA-Z]*' => ['controller' => 'Admin/CSV', 'action' => 'import'],
             '/admin/csv_import/execute' => ['controller' => 'Admin/CSV', 'action' => 'store'],
             '/admin/csv_export\?data=[a-zA-Z]*' => ['controller' => 'Admin/CSV', 'action' => 'export'],
-            '/admin/csv_export/execute\?data=[a-zA-Z]*' => ['controller' => 'Admin/CSV', 'action' => 'download'],
+            '/admin/csv_export/execute\?data=[a-zA-Z]*[\&period_beginning=[0-9\-]*]*[\&period_ending=[0-9\-]*]*' => ['controller' => 'Admin/CSV', 'action' => 'download'],
         ];
     }
 

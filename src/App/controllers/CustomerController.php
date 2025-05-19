@@ -239,4 +239,10 @@ class CustomerController extends Controller
             throw new HttpNotFoundException();
         }
     }
+
+    public function searchPostcode()
+    {
+        $customer = $this->model->get('Customer');
+        $customer->searchPostCode($_GET['zip']);
+    }
 }

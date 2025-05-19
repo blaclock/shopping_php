@@ -14,19 +14,21 @@ class CartController extends Controller
     {
         if (\App\models\Auth::check()) {
             $customer_id = $_SESSION['customer']['id'];
+            // 顧客情報を取得
+            $customer = $this->model->get('Customer')->getCustomer($customer_id);
+            // カート情報を取得
             $cart = $this->model->get('Cart');
             $carts = $cart->getCartData($customer_id);
             $totalQuantity = $cart->getTotalQuantity($customer_id);
             $totalAmount = $cart->getTotalAmount($customer_id);
-            $token = uniqid('', true);
-            $_SESSION['token'] = $token;
+
             $this->view(
                 'carts.index',
                 [
                     "carts" => $carts,
                     "totalQuantity" => $totalQuantity,
                     "totalAmount" => $totalAmount,
-                    "token" => $token
+                    "customer" => $customer,
                 ]
             );
         } else {

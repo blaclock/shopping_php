@@ -8,6 +8,17 @@ use Validation;
 
 class ProductController extends Controller
 {
+    public function top()
+    {
+        $top5 = $this->model->get('Product')->getTop5();
+        $this->view(
+            'top.index',
+            [
+                'top5' => $top5
+            ]
+        );
+    }
+
     public function index()
     {
         // Productモデルのインスタンスを取得
@@ -26,13 +37,16 @@ class ProductController extends Controller
             $favorites = [];
         }
 
+        list($filterQuery, $sortQuery) = $this->getQuery();
         $this->view(
             'products.index',
             [
                 'products' => $products,
                 'productNum' => $productNum,
                 'favorites' => $favorites,
-                'pagination' => $paginationInfo
+                'pagination' => $paginationInfo,
+                'filterQuery' => $filterQuery,
+                'sortQuery' => $sortQuery
             ]
         );
     }
@@ -41,11 +55,12 @@ class ProductController extends Controller
     {
         // Productモデルのインスタンスを取得
         $product = $this->model->get('Product');
-        // カテゴリー一覧を取得
-        $categories = $product->getCategoryList();
+
         // 検索ワードに基づいて商品を取得
         list($products, $productNum, $paginationInfo) = $product->searchProduct($_GET['q']);
         // var_dump($paginationInfo);
+
+        list($filterQuery, $sortQuery) = $this->getQuery();
 
         if ($product !== false) {
             $this->view(
@@ -53,7 +68,9 @@ class ProductController extends Controller
                 [
                     'products' => $products,
                     'productNum' => $productNum,
-                    'pagination' => $paginationInfo
+                    'pagination' => $paginationInfo,
+                    'filterQuery' => $filterQuery,
+                    'sortQuery' => $sortQuery
                 ]
             );
         } else {
@@ -61,11 +78,27 @@ class ProductController extends Controller
                 'products.index',
                 [
                     'products' => $products,
-                    'categories' => $categories,
-                    'pagination' => $paginationInfo
+                    'pagination' => $paginationInfo,
+                    'filterQuery' => $filterQuery,
+                    'sortQuery' => $sortQuery
                 ]
             );
         }
+    }
+
+    private function getQuery()
+    {
+        $filterQuery = $_GET;
+
+        $sortQuery = '';
+        foreach ($_GET as $key => $val) {
+            if (!empty($val) && $key !== 'sort' && $key !== 'page') {
+                $sortQuery .= $key . '=' . $val . '&';
+            }
+        }
+        $sortQuery = substr($sortQuery, 0, -1);
+
+        return [$filterQuery, $sortQuery];
     }
 
     public function show()

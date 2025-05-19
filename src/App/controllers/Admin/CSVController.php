@@ -87,13 +87,9 @@ class CSVController extends Controller
     public function download()
     {
         if (\App\models\Auth::checkAdmin()) {
-            $data = $_GET['data'];
-            $csv = new CSV();
-            $csv->exportCSV($data);
-            $this->view(
-                'admins.csv.export',
-                []
-            );
+            $table = $_GET['data'];
+            $data = $this->model->get($table);
+            $data->exportCSV();
         } else {
             header('Location: ' . '/admin/login');
         }

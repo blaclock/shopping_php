@@ -23,15 +23,15 @@
                 <p class="w-[200px] text-lg">カテゴリー</p>
                 <p>{{ $categories[$productData['category'] - 1]['name'] }}</p>
             </div>
-            <div class="flex mb-6">
+            <div class="flex mb-8">
                 <p class="w-[200px] text-lg">説明</p>
                 <p>{{ $productData['detail'] }}</p>
             </div>
             <div class="flex mb-4">
                 <input type="submit" name="send" value="{{ \App\consts\CommonConst::REGISTER_BACK }}"
-                    class="rounded-full border border-gray-500 w-32 bg-white hover:bg-gray-700 hover:text-white px-6 py-4 hover:cursor-pointer mr-2">
+                    class="rounded-full border border-gray-500 w-32 bg-white hover:bg-gray-700 hover:text-white px-4 md:px-6 py-2 md:py-4 hover:cursor-pointer mr-5">
                 <input type="submit" name="send" value="{{ \App\consts\CommonConst::REGISTER_COMPLETE }}"
-                    class="rounded-full border border-gray-500 w-32 bg-white hover:bg-red-700 hover:text-white px-6 py-4 hover:cursor-pointer">
+                    class="rounded-full border border-gray-500 w-32 bg-white hover:bg-red-700 hover:text-white px-4 md:px-6 py-2 md:py-4 hover:cursor-pointer">
             </div>
             @foreach ($productData as $column => $val)
                 @if ($column === 'image')

@@ -6,10 +6,10 @@
 @endpush
 
 @section('content')
-    <div class="">
+    <ul class="">
         <form method="post" action="/admin/product/confirm" enctype="multipart/form-data">
-            <li class="flex mb-4">
-                <label for="name" class="w-[200px] text-lg">商品名</label>
+            <li class="md:flex mb-4">
+                <label for="name" class="w-[200px] text-lg mb-2 md:mb-0 inline-block">商品名</label>
                 <div>
                     <input type="text" name="name" class="border border-gray-300 p-2 w-80" id="name"
                         value="{{ $productData['name'] }}">
@@ -20,8 +20,8 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
-                <label for="price" class="w-[200px] text-lg">価格(税込)</label>
+            <li class="md:flex mb-4">
+                <label for="price" class="w-[200px] text-lg mb-2 md:mb-0 inline-block">価格(税込)</label>
                 <div>
                     <input type="text" name="price" class="border border-gray-300 p-2" id="price"
                         value="{{ $productData['price'] }}">
@@ -32,8 +32,8 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
-                <label for="image" class="w-[200px] text-lg">画像</label>
+            <li class="md:flex mb-4">
+                <label for="image" class="w-[200px] text-lg mb-2 md:mb-0 inline-block">画像</label>
                 <div class="flex">
                     <div class="w-80 py-10 border border-dashed border-gray-700 bg-gray-50" id="drop-zone">
                         <div class="text-center">
@@ -52,8 +52,8 @@
                     </div>
                 </div>
             </li>
-            <li class="flex mb-4">
-                <p class="w-[200px] text-lg">カテゴリー</p>
+            <li class="md:flex mb-4">
+                <p class="w-[200px] text-lg mb-2 md:mb-0 inline-block">カテゴリー</p>
                 <div class="">
                     @foreach ($categories as $category)
                         <input type="radio" name="category" value="{{ $category['id'] }}"
@@ -70,8 +70,8 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
-                <label for="detail" class="w-[200px] text-lg">説明</label>
+            <li class="md:flex mb-4">
+                <label for="detail" class="w-[200px] text-lg mb-2 md:mb-0 inline-block">説明</label>
                 <div>
                     <textarea type="text" name="detail" class="border border-gray-300 p-2" rows="4" cols="40" id="detail">{{ $productData['detail'] }}</textarea>
                     @if (isset($errMessage))
@@ -90,5 +90,5 @@
             </li>
         </form>
         {{-- {{ phpinfo() }} --}}
-    </div>
+    </ul>
 @endsection

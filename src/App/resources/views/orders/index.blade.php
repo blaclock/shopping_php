@@ -6,32 +6,34 @@
 
 @section('content')
     <section class="text-gray-600 body-font">
-        <h2 class="text-3xl font-bold">注文履歴</h2>
-        @if ($orders !== false)
-            <div class="flex mb-2 relative ">
-                <span class="">{{ $orderNum }}件</span>
-                <div class="inline-block ml-auto filter">
-                    <span class="inline-block ml-auto text-lg text-right pb-2">↑↓フィルター</span>
-                    <div class="absolute left-0 hidden dropArea w-full">
-                        @if (isset($_GET['category_id']))
+        <h2 class="text-2xl font-bold">注文履歴</h2>
+
+        <div class="flex items-center mb-2 relative ">
+            <span class="text-lg">{{ $orderNum }}件</span>
+            <div class="inline-block filter">
+                <span class="inline-block ml-auto text-lg text-right pb-2">フィルター</span>
+                <div class="absolute left-0 hidden dropArea w-full">
+                    @if (isset($_GET['category_id']))
+                        <form action="/admin/orders?category_id={{ $_GET['category_id'] }}" method="get"
+                            class="p-8 w-full bg-gray-300">
+                            <input type="hidden" name="category_id" value="{{ $_GET['category_id'] }}">
+                        @else
                             <form action="/admin/orders" method="get" class="p-8 w-full bg-gray-300">
-                                <input type="hidden" name="category_id" value="{{ $_GET['category_id'] }}">
-                            @else
-                                <form action="/admin/orders" method="get" class="p-8 w-full bg-gray-300">
-                        @endif
-                        <div class="flex flex-col md:flex-row mb-4">
-                            <span class="text-xl mr-4">期間</span>
-                            <input type="date" name="period_beginning">〜
-                            <input type="date" name="period_ending">
-                        </div>
-                        <div class="text-right">
-                            <input type="submit" value="絞り込み"
-                                class="rounded-full border border-gray-500 w-[200px] px-4 py-4 bg-white hover:bg-gray-700 hover:text-white hover:cursor-pointer duration-200">
-                        </div>
-                        </form>
+                    @endif
+                    <div class="flex flex-col md:flex-row mb-5 md:mb-10">
+                        <span class="text-xl mr-4">期間</span>
+                        <input type="date" name="period_beginning">〜
+                        <input type="date" name="period_ending">
                     </div>
+                    <div class="text-right">
+                        <input type="submit" value="絞り込み"
+                            class="rounded-full border border-gray-500 px-2 md:px-4 py-2 md:py-4 bg-white hover:bg-gray-700 hover:text-white hover:cursor-pointer duration-200">
+                    </div>
+                    </form>
                 </div>
             </div>
+        </div>
+        @if (count($orders) !== 0)
             <ul class="">
                 @foreach ($orders as $order)
                     <li class="border border-gray-100 bg-white mb-5">
@@ -49,7 +51,7 @@
                                 <span class="mb-2">数量：{{ $order['quantity'] }}</span>
                                 <span
                                     class="mb-4">合計：&yen;{{ number_format($order['price'] * $order['quantity']) }}</span>
-                                <a href="/product/review?product_id={{ $product['id'] }}"
+                                <a href="/product/review?product_id={{ $order['product_id'] }}"
                                     class="inline-block hover:opacity-70">レビューを書く</a>
                             </div>
                         </div>

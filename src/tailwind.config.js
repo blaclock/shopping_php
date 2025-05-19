@@ -6,6 +6,8 @@ module.exports = {
     extend: {
       spacing: {
         '120': '30rem',
+        '1/10': '10%',
+        '1/2': '50%',
       },
       keyframes: {
         grayTransition: {

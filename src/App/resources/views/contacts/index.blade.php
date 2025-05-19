@@ -6,7 +6,7 @@
 
 @section('content')
     <section class="text-gray-600 body-font md:mb-[200px]">
-        <h2 class="text-3xl font-bold mb-8">お問い合わせ</h2>
+        <h2 class="text-2xl font-bold mb-8">お問い合わせ</h2>
         @if (count($contacts) !== 0)
             <ul class="mb-10">
                 @foreach ($contacts as $contact)

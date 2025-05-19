@@ -10,10 +10,10 @@
  class="lg:w-1/4 md:w-1/2 p-6 w-full border border-gray-300 duration-200 bg-white hover:bg-gray-700 hover:text-white mr-5 [&:nth-child(3n)]:mr-0 [&:nth-child(n-3)]:mt-10">
  <span>注文履歴一覧</span>
  </a>
- <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/csv_import?data=orders"
+ <?php /* <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/csv_import?data=orders"
  class="lg:w-1/4 md:w-1/2 p-6 w-full border border-gray-300 duration-200 bg-white hover:bg-gray-700 hover:text-white mr-5 [&:nth-child(3n)]:mr-0 [&:nth-child(n-3)]:mt-10">
  <span>CSVインポート</span>
- </a>
+ </a> */ ?>
  <a href="<?php echo \htmlentities(App\consts\CommonConst::APP_URL??'', ENT_QUOTES, 'UTF-8', false); ?>admin/csv_export?data=orders"
  class="lg:w-1/4 md:w-1/2 p-6 w-full border border-gray-300 duration-200 bg-white hover:bg-gray-700 hover:text-white mr-5 [&:nth-child(3n)]:mr-0 [&:nth-child(n-3)]:mt-10">
  <span>CSVエクスポート</span>

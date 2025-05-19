@@ -6,12 +6,34 @@
 
 <?php $this->startSection('content'); ?>
  <section class="text-gray-600 body-font">
- <h2 class="text-3xl font-bold mb-8">注文履歴</h2>
- <?php if($orders !== false): ?>
- <div class="flex mb-2 relative ">
- <span class=""><?php echo \htmlentities($orderNum??'', ENT_QUOTES, 'UTF-8', false); ?>件</span>
- <div class="inline-block ml-auto filter">
- <span class="inline-block ml-auto text-lg text-right pb-2">↑↓フィルター</span>
+ <h2 class="text-3xl md:text-3xl font-bold mb-5">注文履歴</h2>
+ <div class="inline-block px-5 py-2 mb-5 bg-white">
+ <p class="text-xl">注文期間：
+ <?php if(empty($_GET['period_beginning']) && empty($_GET['period_ending'])): ?>
+ 全期間
+ <?php else: ?>
+ <?php if(!empty($_GET['period_beginning'])): ?>
+ <?php echo \htmlentities(explode('-', $_GET['period_beginning'])[0] . '年' . explode('-', $_GET['period_beginning'])[1] . '月' . explode('-', $_GET['period_beginning'])[2] . '日'??'', ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php endif; ?>
+ 〜
+ <?php if(!empty($_GET['period_ending'])): ?>
+ <?php echo \htmlentities(explode('-', $_GET['period_ending'])[0] . '年' . explode('-', $_GET['period_ending'])[1] . '月' . explode('-', $_GET['period_ending'])[2] . '日'??'', ENT_QUOTES, 'UTF-8', false); ?>
+
+ <?php endif; ?>
+ <?php endif; ?>
+ </p>
+ <p class="text-xl">売上合計金額：<?php echo \htmlentities(number_format($totalAmount)??'', ENT_QUOTES, 'UTF-8', false); ?></p>
+ </div>
+
+ <div class="flex items-center mb-2 relative ">
+ <span class="text-lg"><?php echo \htmlentities($orderNum??'', ENT_QUOTES, 'UTF-8', false); ?>件</span>
+ <div class="inline-block ml-5 filter">
+ <span class="inline-block text-lg">フィルター</span>
+ <?php if(count($orders) !== 0): ?>
+ <a href="/admin/csv_export/execute?data=Order&period_beginning=<?php echo \htmlentities($_GET['period_beginning']??'', ENT_QUOTES, 'UTF-8', false); ?>&period_ending=<?php echo \htmlentities($_GET['period_ending']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="ml-5 inline-block text-center py-2 px-2 bg-white border border-gray-300 hover:bg-gray-700 hover:text-white duration-200">CSVエクスポート</a>
+ <?php endif; ?>
  <div class="absolute left-0 hidden dropArea w-full">
  <?php if(isset($_GET['category_id'])): ?>
  <form action="/admin/orders" method="get" class="p-8 w-full bg-gray-300">
@@ -19,40 +41,46 @@
  <?php else: ?>
  <form action="/admin/orders" method="get" class="p-8 w-full bg-gray-300">
  <?php endif; ?>
- <div class="flex flex-col md:flex-row mb-4">
- <span class="text-xl mr-4">期間</span>
+ <div class="flex flex-col md:flex-row mb-10">
+ <span class="text-xl mr-4">注文日：</span>
  <input type="date" name="period_beginning">〜
  <input type="date" name="period_ending">
  </div>
  <div class="text-right">
  <input type="submit" value="絞り込み"
- class="rounded-full border border-gray-500 w-[200px] px-4 py-4 bg-white hover:bg-gray-700 hover:text-white hover:cursor-pointer duration-200">
+ class="rounded-full border border-gray-500 px-2 md:px-4 py-2 md:py-4 bg-white hover:bg-gray-700 hover:text-white hover:cursor-pointer duration-200">
  </div>
  </form>
  </div>
  </div>
  </div>
+ <?php if(count($orders) !== 0): ?>
  <ul class="mb-10">
  <?php $__currentLoopData = $orders; $this->addLoop($__currentLoopData);$this->getFirstLoop();
  foreach($__currentLoopData as $order): $loop = $this->incrementLoopIndices();  ?>
  <li class="border border-gray-100 bg-white mb-5">
- <div class="flex flex-col md:flex-row bg-gray-100 px-5 py-5">
+ <div class="flex flex-col md:flex-row bg-gray-100 px-2 md:px-5 py-2 md:py-5">
  <span class="mr-10">注文日：<br
  class="hidden md:inline"><?php echo \htmlentities(explode(' ', $order['created_at'])[0]??'', ENT_QUOTES, 'UTF-8', false); ?></span>
  <span class="mr-10">金額：<br
  class="hidden md:inline">&yen;<?php echo \htmlentities(number_format($order['price'] * $order['quantity'])??'', ENT_QUOTES, 'UTF-8', false); ?></span>
- <a href="/admin/customers?id=<?php echo \htmlentities($order['customer_id']??'', ENT_QUOTES, 'UTF-8', false); ?>"><span class="">注文者：<br
+ <a href="/admin/customers?id=<?php echo \htmlentities($order['customer_id']??'', ENT_QUOTES, 'UTF-8', false); ?>"
+ class="hover:opacity-70
+ "><span class="">注文者：<br
  class="hidden md:inline"><?php echo \htmlentities($order['family_name'] . ' ' . $order['first_name']??'', ENT_QUOTES, 'UTF-8', false); ?></span></a>
  <span class="md:ml-auto">注文ID：<?php echo \htmlentities($order['id']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
  </div>
- <div class="flex px-5 py-4 border-t-2 border-gray-200">
- <a href="/product?id=<?php echo \htmlentities($order['product_id']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="hover:opacity-80">
+ <div class="flex flex-wrap px-2 md:px-5 py-2 md:py-5 border-t-2 border-gray-200">
+ <a href="/product?id=<?php echo \htmlentities($order['product_id']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="w-[100px] mr-5 hover:opacity-80">
  <img src="<?php echo \htmlentities(App\consts\CommonConst::IMG_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>products/<?php echo \htmlentities($order['image']??'', ENT_QUOTES, 'UTF-8', false); ?>"
- alt="<?php echo \htmlentities($order['name']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="w-[100px] mr-4">
+ alt="<?php echo \htmlentities($order['name']??'', ENT_QUOTES, 'UTF-8', false); ?>" class="w-full">
  </a>
- <div class="flex flex-col">
- <span class="mb-2">商品名：<?php echo \htmlentities($order['name']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
+ <div class="flex flex-col w-[calc(100%_-_120px)]">
+ <span class="mb-2 text-lg">商品名：<?php echo \htmlentities($order['name']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
  <span class="mr-5">数量：<?php echo \htmlentities($order['quantity']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
+ <span class="mr-5">郵便番号：<?php echo \htmlentities($order['zip']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
+ <span class="mr-5">配達先：<?php echo \htmlentities($order['delivery_to']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
+ <span class="mr-5">決済方法：<?php echo \htmlentities($order['payment_type']??'', ENT_QUOTES, 'UTF-8', false); ?></span>
 
  </div>
  </div>

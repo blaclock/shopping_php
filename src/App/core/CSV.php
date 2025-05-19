@@ -22,16 +22,16 @@ class CSV extends Model
         unlink($filePath);
     }
 
-    public function exportCSV($table)
+    public static function export($list)
     {
-        $filePath = '/tmp/export.csv';
-        $model = new Model();
-
-        $res = $model->db->export($table, $filePath);
-        if ($res === false) {
-            echo 'ファイルのエクスポートに失敗しました<br>';
-            return;
+        // ファイルを開く
+        $fp = fopen(\App\consts\CommonConst::RESOURCE_DIR . 'csv/export.csv', 'w');
+        // 1行ずつ配列の内容をファイルに書き込む
+        foreach ($list as $fields) {
+            fputcsv($fp, $fields);
         }
+        // ファイルを閉じる
+        fclose($fp);
 
         $filePath = \App\consts\CommonConst::RESOURCE_DIR . 'csv/export.csv';
         header('Content-Type: text/csv');

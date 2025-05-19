@@ -13,12 +13,14 @@ class CustomerController extends Controller
     {
         if (\App\models\Auth::checkAdmin()) {
             $customer = $this->model->get('Customer');
-            $customers = $customer->getCustomers();
+            list($customers, $customerNum, $pagination) = $customer->getCustomers();
 
             $this->view(
                 'admins.customers.index',
                 [
-                    'customers' => $customers
+                    'customers' => $customers,
+                    'customerNum' => $customerNum,
+                    'pagination' => $pagination,
                 ]
             );
         } else {

@@ -14,12 +14,14 @@ class OrderController extends Controller
         if (\App\models\Auth::checkAdmin()) {
             $order = $this->model->get('Order');
             // 注文履歴データを取得
-            list($orders, $orderNum, $paginationInfo) = $order->getOrderData();
+            list($orders, $orderNum, $paginationInfo, $totalAmount) = $order->getOrderData();
+            // $totalAmount = $order->calcOrdersAmount($orders);
             $this->view(
                 'admins.orders.index',
                 [
                     "orders" => $orders,
                     "orderNum" => $orderNum,
+                    "totalAmount" => $totalAmount,
                     "pagination" => $paginationInfo,
                 ]
             );

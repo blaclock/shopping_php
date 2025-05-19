@@ -7,16 +7,16 @@
 @section('content')
     <section class="text-gray-600 body-font">
         <h2 class="text-2xl font-bold mb-4">この商品をレビュー</h2>
-        <div class="flex items-center mb-8">
+        <div class="flex flex-col-reverse md:flex-row items-center mb-8">
             <img src="{{ App\consts\CommonConst::IMG_PATH }}products/{{ $product['image'] }}" alt="{{ $product['image'] }}"
-                class="w-20">
+                class="w-full md:w-20">
             <span class="ml-4">{{ $product['name'] }}</span>
         </div>
         <form method="POST" action="/product/review/store" class="px-4 mb-6">
             <input type="hidden" name="token" value="{{ $token }}">
             <input type="hidden" name="product_id" value="{{ $product['id'] }}">
             {{-- <div class="xl:w-1/4 lg:w-1/3 md:w-1/2 p-6 w-full"> --}}
-            <li class="flex flex-col items-center md:flex-row mb-4">
+            <li class="md:flex flex-col items-center md:flex-row mb-4">
                 <label for="title" class="w-[200px] text-lg">レビュータイトル</label>
                 <div class="">
                     <input type="text" name="title" id="title" value="{{ $review['title'] }}"
@@ -28,10 +28,10 @@
                     @endif
                 </div>
             </li>
-            <li class="flex flex-col items-center md:flex-row mb-4">
+            <li class="md:flex flex-col items-center md:flex-row mb-4">
                 <label for="content" class="w-[200px] text-lg">レビューを追加</label>
                 <div class="">
-                    <textarea name="content" id="content" class="border border-gray-300 p-2 w-[700px] h-[130px]">{{ $review['content'] }}</textarea>
+                    <textarea name="content" id="content" class="border border-gray-300 p-2 w-full lg:w-[700px] h-[130px]">{{ $review['content'] }}</textarea>
                     @if (isset($errMessage['content']))
                         @foreach ($errMessage['content'] as $error)
                             <p class="text-red-400">{{ $error }}</p>
@@ -39,7 +39,7 @@
                     @endif
                 </div>
             </li>
-            <li class="flex flex-col items-center md:flex-row mb-10">
+            <li class="md:flex flex-col items-center md:flex-row mb-10">
                 <span class="w-[200px] text-lg">評価</span>
                 <div class="">
                     <div class="flex">

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="">
-        <ul>
+        <ul class="mb-4 md:mb-8">
             <li class="flex mb-4">
                 <span class="w-[200px] text-lg">商品名</span>
                 <span>{{ $productData['name'] }}</span>
@@ -23,7 +23,7 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
+            <li class="flex">
                 <span class="w-[200px] text-lg">カテゴリー</span>
                 <span>{{ $categories[$productData['category_id'] - 1]['name'] }}</span>
             </li>

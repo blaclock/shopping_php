@@ -16,8 +16,8 @@
             {% include 'category_menu.html.twig' %}
         </div> --}}
     <div class="flex flex-col md:flex-row lg:w-[1000px] mx-auto mb-10 md:mb-20">
-        <div class="mb-5 md:mb-0 md:mr-20">
-            <div class="w-full md:w-[500px] relative">
+        <div class="mb-5 md:mb-0 md:mr-10">
+            <div class="w-full md:w-[300px] lg:w-[500px] relative">
                 <img src="{{ App\consts\CommonConst::IMG_PATH }}products/{{ $product['image'] }}"
                     alt="{{ $product['image'] }}" class="w-full">
                 @if (in_array($product['id'], $favorites))
@@ -81,14 +81,15 @@
                         </svg>
                         <span class="ml-2">カートに入れる</span>
                     </button>
-
-
                 </div>
             </form>
+            <article class="mt-10">
+                <pre class="font-base whitespace-pre-wrap">{{ $product['detail'] }}</pre>
+            </article>
         </div>
     </div>
 
-    <section class="text-gray-600 body-font">
+    {{-- <section class="text-gray-600 body-font">
         <div class="container pb-20 mx-auto flex flex-wrap flex-col">
             <div class="tab-panel">
                 <ul class="flex mx-auto flex-wrap lg:w-[1000px] tab-group">
@@ -109,16 +110,16 @@
                 <div class="panel-group px-4 py-8 lg:w-[1000px] mx-auto">
                     <div class="panel tab-A is-show">contentA</div>
                     <div class="panel tab-B hidden">
-                        <pre class="font-base">{{ $product['detail'] }}</pre>
+                        <pre class="font-base whitespace-pre-wrap">{{ $product['detail'] }}</pre>
                     </div>
                     <div class="panel tab-C hidden">contentC</div>
                 </div>
 
             </div>
-    </section>
+    </section> --}}
 
     <section class="lg:w-[1000px] mx-auto">
-        <h1 class="text-4xl mb-5">お客様の声</h1>
+        <h1 class="text-xl md:text-3xl mb-5">お客様の声</h1>
         @if (count($reviews) !== 0)
             <ul class="">
                 @foreach ($reviews as $review)
@@ -133,7 +134,7 @@
                             @endcomponent
                         </div>
                         <p class="text-xl font-medium mb-2">{{ $review['title'] }}</p>
-                        <p>{{ $review['content'] }}</p>
+                        <pre class="font-base whitespace-pre-wrap">{{ $review['content'] }}</pre>
                         <p></p>
                         <p></p>
                     </li>

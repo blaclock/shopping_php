@@ -3,18 +3,22 @@
 let filter = document.getElementsByClassName('filter');
 filter = Array.from(filter);
 filter.forEach(element => {
-  element.onmouseenter = openSortMenu;
   element.onmouseleave = closeSortMenu;
+  element.onclick = clickSortMenu;
 });
 
-// タブをクリックすると実行する関数
-function openSortMenu() {
+// ドロップエリアから離れると実行する関数
+function closeSortMenu() {
   const dropArea = this.getElementsByClassName('dropArea');
-  dropArea[0].style.display = 'flex';
+  dropArea[0].classList.add('hidden');
+  dropArea[0].classList.remove('flex');
 };
 
 // タブをクリックすると実行する関数
-function closeSortMenu() {
+function clickSortMenu() {
   const dropArea = this.getElementsByClassName('dropArea');
-  dropArea[0].style.display = 'none';
+  if (dropArea[0].classList.contains('hidden')) {
+    dropArea[0].classList.add('flex');
+    dropArea[0].classList.remove('hidden');
+  }
 };

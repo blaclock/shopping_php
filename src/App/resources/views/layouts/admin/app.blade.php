@@ -29,7 +29,7 @@
             <a href="{{ App\consts\CommonConst::APP_URL }}admin" class="p-4 text-white hover:bg-gray-600">
                 <span>トップ</span>
             </a>
-            <a href="{{ App\consts\CommonConst::APP_URL }}admin/admins/top" class="p-4 text-white hover:bg-gray-600">
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/admins" class="p-4 text-white hover:bg-gray-600">
                 <span>管理者情報</span>
             </a>
             <a href="{{ App\consts\CommonConst::APP_URL }}admin/customers/top" class="p-4 text-white hover:bg-gray-600">
@@ -41,15 +41,22 @@
             <a href="{{ App\consts\CommonConst::APP_URL }}admin/orders/top" class="p-4 text-white hover:bg-gray-600">
                 <span>注文履歴</span>
             </a>
+            <a href="{{ App\consts\CommonConst::APP_URL }}admin/contacts" class="p-4 text-white hover:bg-gray-600">
+                <span>お問い合わせ</span>
+            </a>
         </ul>
         {{-- main contents --}}
-        <div class="container px-5 py-20 mx-auto w-full md:w-5/6">
+        <div class="max-w-[1920px] px-5 md:px-10 py-10 md:py-20 w-full md:w-[calc(100%_-_200px)]">
             @yield('content')
         </div>
     </div>
 
-    <script src="{{ App\consts\CommonConst::JS_PATH }}header_menu.js"></script>
-    @stack('js')
+    @component('components.footer', [
+        'footerBgColor' => 'gray-700',
+        'footerTextColor' => 'white',
+        'user' => 'admin',
+    ])
+    @endcomponent
 </body>
 
 </html>

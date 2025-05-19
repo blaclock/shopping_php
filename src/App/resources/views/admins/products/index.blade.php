@@ -21,10 +21,12 @@
                                     <span class="mr-10">最終更新日：<br>{{ explode(' ', $product['updated_at'])[0] }}</span>
                                 @endif
                             </div>
-                            <div class="flex px-5 py-4 border-t-2 border-gray-200">
-                                <img src="{{ App\consts\CommonConst::IMG_PATH }}products/{{ $product['image'] }}"
-                                    alt="{{ $product['image'] }}" class="w-[100px]">
-                                <div class="flex flex-col w-5/6 pl-5">
+                            <div class="flex px-5 py-4 border-t-2 border-gray-200 bg-white">
+                                <div class="w-[100px] mr-5">
+                                    <img src="{{ App\consts\CommonConst::IMG_PATH }}products/{{ $product['image'] }}"
+                                        alt="{{ $product['name'] }}" class="w-full">
+                                </div>
+                                <div class="flex flex-col w-[calc(100%_-_120px)]">
                                     <span class="mb-2">商品名：{{ $product['name'] }}</span>
                                     <span class="mb-2">カテゴリー：{{ $product['category'] }}</span>
                                     <span class="mb-4">価格：&yen;{{ number_format($product['price']) }}円</span>

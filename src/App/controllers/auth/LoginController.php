@@ -90,11 +90,11 @@ class LoginController extends Controller
 
                 //差出人
                 $from = 'blaclock@gmail.com';
-                $fromname = '黒岩知宏';
+                $fromName = '黒岩知宏';
 
                 //宛先
                 $to = $email;
-                $toname = '宛名';
+                $toName = '宛名';
 
                 //件名・本文
                 $subject = 'パスワード確認';
@@ -111,8 +111,8 @@ class LoginController extends Controller
                 $mail->Port = 587;
                 $mail->CharSet = "utf-8";
                 $mail->Encoding = "base64";
-                $mail->setFrom($from, $fromname);
-                $mail->addAddress($to, $toname);
+                $mail->setFrom($from, $fromName);
+                $mail->addAddress($to, $toName);
                 $mail->Subject = $subject;
                 $mail->Body    = $body;
 

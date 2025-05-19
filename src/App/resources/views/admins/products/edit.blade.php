@@ -5,10 +5,10 @@
 @endpush
 
 @section('content')
-    <div class="">
+    <ul class="">
         <form method="post" action="/admin/product/update?id={{ $productData['id'] }}" enctype="multipart/form-data">
             <input type="hidden" name="id" value="{{ $productData['id'] }}">
-            <li class="flex mb-4">
+            <li class="md:flex mb-4">
                 <label for="name" class="w-[200px] text-lg">商品名</label>
                 <div>
                     <input type="text" name="name" class="border border-gray-300 p-2 w-80" id="name"
@@ -20,7 +20,7 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
+            <li class="md:flex mb-4">
                 <label for="price" class="w-[200px] text-lg">価格(税込)</label>
                 <div>
                     <input type="text" name="price" class="border border-gray-300 p-2" id="price"
@@ -32,7 +32,7 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
+            <li class="md:flex mb-4">
                 <label for="image" class="w-[200px] text-lg">画像</label>
                 <div class="flex">
                     <div class="w-80 py-10 border border-dashed border-gray-700" id="drop-zone">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
             </li>
-            <li class="flex mb-4">
+            <li class="md:flex mb-4">
                 <p class="w-[200px] text-lg">カテゴリー</p>
                 <div class="">
                     @foreach ($categories as $category)
@@ -88,7 +88,7 @@
                     @endif
                 </div>
             </li>
-            <li class="flex mb-4">
+            <li class="md:flex mb-4">
                 <label for="detail" class="w-[200px] text-lg">説明</label>
                 <div>
                     <textarea type="text" name="detail" class="border border-gray-300 p-2" rows="4" cols="40" id="detail">{{ $productData['detail'] }}</textarea>
@@ -105,5 +105,5 @@
             </li>
         </form>
         {{-- {{ phpinfo() }} --}}
-    </div>
+    </ul>
 @endsection

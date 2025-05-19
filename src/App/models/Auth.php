@@ -10,14 +10,18 @@ class Auth extends Model
         $table = ' customers ';
         $col = ' * ';
 
-        $where = ' email = ? AND password = ? AND delete_flag = ? ';
-        $arrVal = [$_POST['email'], $_POST['password'], 0];
+        $where = ' email = ? AND delete_flag = ? ';
+        $arrVal = [$_POST['email'], 0];
 
         $res = $this->db->select($table, $col, $where, $arrVal);
 
         if (count($res) !== 0) {
-            $_SESSION['customer'] = $res[0];
-            return $res;
+            if (password_verify($_POST['password'], $res[0]['password'])) {
+                $_SESSION['customer'] = $res[0];
+                return $res;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -28,14 +32,18 @@ class Auth extends Model
         $table = ' admins ';
         $col = ' * ';
 
-        $where = ' email = ? AND password = ? ';
-        $arrVal = [$_POST['email'], $_POST['password']];
+        $where = ' email = ? AND delete_flag = ? ';
+        $arrVal = [$_POST['email'], 0];
 
         $res = $this->db->select($table, $col, $where, $arrVal);
 
         if (count($res) !== 0) {
-            $_SESSION['admin'] = $res[0];
-            return $res;
+            if (password_verify($_POST['password'], $res[0]['password'])) {
+                $_SESSION['admin'] = $res[0];
+                return $res;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
