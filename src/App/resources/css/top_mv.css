@@ -1,0 +1,78 @@
+.swiper {
+  width: 100%;
+}
+
+/* .swiper-button-prev::before {
+  position: absolute;
+  top: 50%;
+  content: '';
+  width: 20px;
+  height: 2px;
+  background-color: #fff;
+  transform: rotate(-45deg) translateY(-50%);
+}
+
+.swiper-button-prev::after {
+  position: absolute;
+  top: 50%;
+  content: '';
+  width: 20px;
+  height: 2px;
+  background-color: #fff;
+  transform: rotate(45deg) translateY(-50%);
+} */
+
+.swiper-button-prev::after {
+  position: absolute;
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-left: solid 2px #fff;
+  border-top: solid 2px #fff;
+  transform: rotate(-45deg);
+}
+
+.swiper-button-next::after {
+  position: absolute;
+  content: '';
+  width: 20px;
+  height: 20px;
+  border-left: solid 2px #fff;
+  border-top: solid 2px #fff;
+  transform: rotate(135deg);
+}
+
+@media screen and (min-width:768px) {
+
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    width: 40px;
+    height: 40px;
+  }
+
+  .swiper-button-prev {
+    left: 30px;
+  }
+
+  .swiper-button-next {
+    right: 30px;
+  }
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #fff;
+}
+
+.mv .catch-copy {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  color: #fff;
+  text-shadow: #000 1px 0 10px;
+}

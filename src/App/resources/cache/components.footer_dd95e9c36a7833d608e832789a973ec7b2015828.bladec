@@ -1,0 +1,21 @@
+<?php if($user === 'customer'): ?>
+ <footer
+ class="h-[60px] md:h-[80px] mb-[60px] md:mb-0 flex flex-wrap px-10  items-center relative text-<?php echo \htmlentities($footerTextColor??'', ENT_QUOTES, 'UTF-8', false); ?> bg-<?php echo \htmlentities($footerBgColor??'', ENT_QUOTES, 'UTF-8', false); ?>">
+ <p class="copy-right">&copy;2023.Tomohiro Kuroiwa</p>
+ </footer>
+<?php endif; ?>
+
+<div class="opacity-0 duration-200 fixed bottom-20 right-5 md:right-10 rounded-full w-10 md:w-20 h-10 md:h-20 bg-gray-500 flex justify-center items-center z-50"
+ id="toTopBtn">
+ <span class="text-xs md:text-base text-white">TOP</span>
+</div>
+
+<script language="JavaScript" type="text/javascript"
+ src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="<?php echo \htmlentities(App\consts\CommonConst::JS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>common.js"></script>
+<?php if($user === 'customer'): ?>
+ <script src="<?php echo \htmlentities(App\consts\CommonConst::JS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>header_menu.js"></script>
+<?php else: ?>
+ <script src="<?php echo \htmlentities(App\consts\CommonConst::JS_PATH??'', ENT_QUOTES, 'UTF-8', false); ?>/admin/header_menu.js"></script>
+<?php endif; ?>
+<?php echo $this->yieldPushContent('js'); ?>

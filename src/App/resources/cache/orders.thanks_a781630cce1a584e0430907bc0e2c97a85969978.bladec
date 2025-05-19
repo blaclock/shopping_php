@@ -1,0 +1,10 @@
+<?php $_shouldextend[1]=1; ?>
+
+<?php $this->startSection('content'); ?>
+ <section class="text-gray-600 body-font">
+ <h2 class="text-xl md:text-3xl font-bold mb-8">ご購入ありがとうございます！</h2>
+ <a href="/mypage/orders" class="underline hover:opacity-70">注文履歴を確認する</a>
+ </section>
+<?php $this->stopSection(); ?>
+
+<?php if (isset($_shouldextend[1])) { echo $this->runChild('layouts.app'); } ?>

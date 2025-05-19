@@ -1,0 +1,22 @@
+.nav-menu.is-active {
+  transition: all 0.2s ease-out;
+}
+
+.drop-down.is-show {
+  display: flex;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: snow;
+}
+
+#datepicker {
+  position: relative;
+  background-color: rebeccapurple;
+}
+
+/* input[type=date] {
+  position: relative;
+  background-color: rebeccapurple;
+} */

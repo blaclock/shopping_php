@@ -1,0 +1,293 @@
+@if ($user === 'customer')
+    <a href="/"
+        class="flex flex-col md:hidden justify-center items-center bg-gray-50 title-font font-medium text-gray-900 hover:opacity-80">
+        <span class="pt-5 md:pt-0 text-4xl font-midium text-{{ $headerTextColor }}">醸-KAMOSU</span>
+        <span>〜日常に少しの特別を〜</span>
+    </a>
+    <header
+        class="h-[60px] md:h-[80px] mx-auto flex flex-wrap md:px-10 fixed z-20 left-0 bottom-0 md:top-0 w-full text-{{ $headerTextColorSp }} md:text-gray-600 bg-{{ $headerBgColorSp }} md:bg-white">
+        <a href="/" class="hidden md:flex title-font font-medium items-center text-gray-900 hover:opacity-80"><span
+                class="text-4xl font-midium text-{{ $headerTextColor }}">醸-KAMOSU</span></a>
+    @else
+        <header
+            class="h-[60px] md:h-[80px] relative mx-auto flex flex-wrap px-5 md:px-10 w-full text-{{ $headerTextColorSp }} md:text-gray-600 bg-{{ $headerBgColorSp }} md:bg-{{ $headerBgColor }}">
+            <a href="/" class="flex items-center hover:opacity-80"><span
+                    class="text-4xl font-midium text-{{ $headerTextColor }}">醸-KAMOSU</span></a>
+@endif
+
+@if ($user === 'customer')
+    <nav class="hidden md:block ml-auto h-full header-nav">
+        <ul class="flex h-full  menu-group">
+            <li class="nav-menu menu1 flex items-center px-4 hover:bg-gray-50">
+                <a href="/products" class="hover:opacity-70">商品</a>
+                <div class="z-50 menu1">
+                    <ul class="drop-down menu-1 hidden px-8 py-4">
+                        <li class="text-center mr-2">
+                            <a href="/products?category_id=1" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_sake.jpg"
+                                    alt="日本酒">
+                                <span>日本酒</span>
+                            </a>
+                        </li>
+                        <li class="text-center mr-2">
+                            <a href="/products?category_id=2" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_beer.jpg"
+                                    alt="">
+                                <span>ビール</span>
+                            </a>
+                        </li>
+                        <li class="text-center">
+                            <a href="/products?category_id=3" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_wine.jpg"
+                                    alt="">
+                                <span>ワイン</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            {{-- <li class="nav-menu menu2 flex items-center px-4 hover:bg-gray-50">
+                <a href="/products" class="hover:opacity-70">コンセプト</a>
+                <div class="z-50 menu2">
+                    <ul class="drop-down menu-2 hidden px-8 py-4">
+                        <li class="text-center mr-2">
+                            <a href="/products?category_id=1" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}Img.jpg" alt="">
+                                <span>日本酒について</span>
+                            </a>
+                        </li>
+                        <li class="text-center mr-2">
+                            <a href="/products?category_id=2" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}Img.jpg" alt="">
+                                <span>ビールについて</span>
+                            </a>
+                        </li>
+                        <li class="text-center">
+                            <a href="/products?category_id=3" class="hover:opacity-80">
+                                <img src="{{ App\consts\CommonConst::IMG_PATH }}Img.jpg" alt="">
+                                <span>ワインについて</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li> --}}
+        </ul>
+        <div class="relative drop-down-group">
+
+            <div class="absolute drop-down menu-2 hidden">contentB</div>
+            <div class="absolute drop-down menu-3 hidden">contentC</div>
+        </div>
+    </nav>
+
+    <div class="hidden md:flex md:ml-auto flex-wrap items-center justify-center">
+        {{-- 検索欄 --}}
+        <form role="search" action="/products" method="GET" class="relative mr-5 mb-0">
+            {{-- <input type="hidden" name="serchUrl" value="/products/search"> --}}
+            <input type="search" name="q" placeholder="商品を検索する"
+                class="w-40 pl-6 border border-gray-600 outline-none">
+            <button type="submit" class="absolute left-2 top-1/2 -translate-y-1/2">
+                <svg class="w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.955 18.956">
+                    <g transform="translate(-7553 147)">
+                        <path
+                            d="M7.521,1.5a6.021,6.021,0,1,0,6.021,6.021A6.027,6.027,0,0,0,7.521,1.5m0-1.5A7.521,7.521,0,1,1,0,7.521,7.521,7.521,0,0,1,7.521,0Z"
+                            transform="translate(7553 -147)" fill="#808080" />
+                        <path d="M5.486,6.547-.53.53.53-.53,6.547,5.486Z" transform="translate(7565.409 -134.591)"
+                            fill="#b79862" />
+                    </g>
+                </svg>
+            </button>
+        </form>
+        {{-- <a class="hover:text-gray-900">お気に入り</a> --}}
+        <a href="/mypage/favorites" class="mr-5">
+            <svg class="w-4 fill-a_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.771 17.501">
+                <path class="a"
+                    d="M-3107.872-749.553a5.6,5.6,0,0,1,4.284,1.985,5.6,5.6,0,0,1,4.272-1.974h0a5.639,5.639,0,0,1,.61.033,5.618,5.618,0,0,1,4.969,6.175c-.147,1.805-1.793,4.239-4.893,7.234a56.356,56.356,0,0,1-4.506,3.895.75.75,0,0,1-.908,0,56.379,56.379,0,0,1-4.506-3.894c-3.1-2.994-4.745-5.427-4.892-7.232a5.59,5.59,0,0,1,.608-3.216,5.585,5.585,0,0,1,2.311-2.335A5.619,5.619,0,0,1-3107.872-749.553Zm4.282,4.058h0a.75.75,0,0,1-.66-.395,4.106,4.106,0,0,0-3.622-2.163,4.113,4.113,0,0,0-1.941.491,4.088,4.088,0,0,0-2.137,4.076c0,.008,0,.017,0,.025.108,1.39,1.685,3.621,4.44,6.282,1.586,1.532,3.166,2.826,3.918,3.424.754-.6,2.34-1.9,3.928-3.434,2.749-2.657,4.322-4.885,4.43-6.273l0-.023a4.116,4.116,0,0,0-3.639-4.533,4.143,4.143,0,0,0-.448-.024,4.106,4.106,0,0,0-3.614,2.154A.75.75,0,0,1-3103.59-745.5Z"
+                    transform="translate(3113.476 749.553)" fill="#808080" />
+            </svg>
+        </a>
+        <a href="/cart" class="mr-5 hover:opacity-80">
+            <svg class="w-5 fill-a_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.333 21.5">
+                <g transform="translate(3041.953 749.554)">
+                    <path
+                        d="M-3023.548-734.423h-11.044a.75.75,0,0,1-.728-.571l-2.174-8.826c0-.009,0-.018-.007-.027l-1.036-4.207h-2.666a.75.75,0,0,1-.75-.75.75.75,0,0,1,.75-.75h3.254a.75.75,0,0,1,.728.571l1.039,4.22h14.811a.75.75,0,0,1,.59.287.75.75,0,0,1,.138.642l-2.178,8.84A.75.75,0,0,1-3023.548-734.423Zm-10.456-1.5h9.869l1.808-7.34h-13.485Z"
+                        fill="#808080" />
+                    <path
+                        d="M-3025.347-732.59a2.27,2.27,0,0,1,2.268,2.268,2.27,2.27,0,0,1-2.268,2.268,2.271,2.271,0,0,1-2.268-2.268A2.271,2.271,0,0,1-3025.347-732.59Zm0,3.036a.769.769,0,0,0,.768-.768.769.769,0,0,0-.768-.768.769.769,0,0,0-.768.768A.769.769,0,0,0-3025.347-729.554Z"
+                        fill="#808080" />
+                    <path
+                        d="M-3032.988-732.59a2.271,2.271,0,0,1,2.268,2.268,2.271,2.271,0,0,1-2.268,2.268,2.271,2.271,0,0,1-2.268-2.268A2.271,2.271,0,0,1-3032.988-732.59Zm0,3.036a.769.769,0,0,0,.768-.768.769.769,0,0,0-.768-.768.769.769,0,0,0-.768.768A.769.769,0,0,0-3032.988-729.554Z"
+                        fill="#808080" />
+                </g>
+            </svg>
+        </a>
+        <a href="/mypage/contact" class="mr-5 hover:opacity-80">
+            <svg id="Capa_1" class="w-5" style="enable-background:new 0 0 60 60;" version="1.1"
+                viewBox="0 0 60 60" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <path
+                    d="M0,8.5v2.291v38.418V51.5h60v-2.291V10.791V8.5H0z M36.625,30.564l-5.446,5.472c-0.662,0.615-1.698,0.614-2.332,0.026  l-5.473-5.498l0.048-0.047L3.647,10.5h52.719L36.577,30.518L36.625,30.564z M20.524,30.533L2,48.355V11.923L20.524,30.533z   M21.934,31.95l5.523,5.549c0.709,0.661,1.619,0.993,2.533,0.993c0.923,0,1.85-0.339,2.581-1.02l5.496-5.522L56.304,49.5H3.686  L21.934,31.95z M39.477,30.534L58,11.922v36.433L39.477,30.534z" />
+            </svg>
+        </a>
+        <a href="/login" class="hover:text-gray-900">
+            @if (isset($_SESSION['customer']))
+                マイページ
+            @else
+                ログイン
+            @endif
+        </a>
+    </div>
+
+    <ul class="flex w-full md:hidden md:ml-auto">
+        <li class="w-1/5 flex items-center justify-center" id="searchBtn">
+            {{-- 検索欄 --}}
+            <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.955 18.956">
+                <g transform="translate(-7553 147)">
+                    <path
+                        d="M7.521,1.5a6.021,6.021,0,1,0,6.021,6.021A6.027,6.027,0,0,0,7.521,1.5m0-1.5A7.521,7.521,0,1,1,0,7.521,7.521,7.521,0,0,1,7.521,0Z"
+                        transform="translate(7553 -147)" fill="#808080" />
+                    <path d="M5.486,6.547-.53.53.53-.53,6.547,5.486Z" transform="translate(7565.409 -134.591)"
+                        fill="#fff" />
+                </g>
+            </svg>
+        </li>
+        <li class="w-1/5 flex items-center justify-center">
+            {{-- <a class="hover:text-gray-900">お気に入り</a> --}}
+            <a href="/mypage/favorites" class="">
+                <svg class="w-4 fill-a_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.771 17.501">
+                    <path class="a"
+                        d="M-3107.872-749.553a5.6,5.6,0,0,1,4.284,1.985,5.6,5.6,0,0,1,4.272-1.974h0a5.639,5.639,0,0,1,.61.033,5.618,5.618,0,0,1,4.969,6.175c-.147,1.805-1.793,4.239-4.893,7.234a56.356,56.356,0,0,1-4.506,3.895.75.75,0,0,1-.908,0,56.379,56.379,0,0,1-4.506-3.894c-3.1-2.994-4.745-5.427-4.892-7.232a5.59,5.59,0,0,1,.608-3.216,5.585,5.585,0,0,1,2.311-2.335A5.619,5.619,0,0,1-3107.872-749.553Zm4.282,4.058h0a.75.75,0,0,1-.66-.395,4.106,4.106,0,0,0-3.622-2.163,4.113,4.113,0,0,0-1.941.491,4.088,4.088,0,0,0-2.137,4.076c0,.008,0,.017,0,.025.108,1.39,1.685,3.621,4.44,6.282,1.586,1.532,3.166,2.826,3.918,3.424.754-.6,2.34-1.9,3.928-3.434,2.749-2.657,4.322-4.885,4.43-6.273l0-.023a4.116,4.116,0,0,0-3.639-4.533,4.143,4.143,0,0,0-.448-.024,4.106,4.106,0,0,0-3.614,2.154A.75.75,0,0,1-3103.59-745.5Z"
+                        transform="translate(3113.476 749.553)" fill="#fff" />
+                </svg>
+            </a>
+        </li>
+        <li class="w-1/5 flex items-center justify-center">
+            <a href="/cart" class="hover:text-gray-900">
+                <svg class="w-5 fill-a_text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.333 21.5">
+                    <g transform="translate(3041.953 749.554)">
+                        <path
+                            d="M-3023.548-734.423h-11.044a.75.75,0,0,1-.728-.571l-2.174-8.826c0-.009,0-.018-.007-.027l-1.036-4.207h-2.666a.75.75,0,0,1-.75-.75.75.75,0,0,1,.75-.75h3.254a.75.75,0,0,1,.728.571l1.039,4.22h14.811a.75.75,0,0,1,.59.287.75.75,0,0,1,.138.642l-2.178,8.84A.75.75,0,0,1-3023.548-734.423Zm-10.456-1.5h9.869l1.808-7.34h-13.485Z"
+                            fill="#fff" />
+                        <path
+                            d="M-3025.347-732.59a2.27,2.27,0,0,1,2.268,2.268,2.27,2.27,0,0,1-2.268,2.268,2.271,2.271,0,0,1-2.268-2.268A2.271,2.271,0,0,1-3025.347-732.59Zm0,3.036a.769.769,0,0,0,.768-.768.769.769,0,0,0-.768-.768.769.769,0,0,0-.768.768A.769.769,0,0,0-3025.347-729.554Z"
+                            fill="#fff" />
+                        <path
+                            d="M-3032.988-732.59a2.271,2.271,0,0,1,2.268,2.268,2.271,2.271,0,0,1-2.268,2.268,2.271,2.271,0,0,1-2.268-2.268A2.271,2.271,0,0,1-3032.988-732.59Zm0,3.036a.769.769,0,0,0,.768-.768.769.769,0,0,0-.768-.768.769.769,0,0,0-.768.768A.769.769,0,0,0-3032.988-729.554Z"
+                            fill="#fff" />
+                    </g>
+                </svg>
+            </a>
+        </li>
+        <li class="w-1/5 flex items-center justify-center">
+            <a href="/mypage/contact" class="hover:opacity-80">
+                <svg id="Capa_1" class="w-5" style="enable-background:new 0 0 60 60;" version="1.1"
+                    viewBox="0 0 60 60" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <path
+                        d="M0,8.5v2.291v38.418V51.5h60v-2.291V10.791V8.5H0z M36.625,30.564l-5.446,5.472c-0.662,0.615-1.698,0.614-2.332,0.026  l-5.473-5.498l0.048-0.047L3.647,10.5h52.719L36.577,30.518L36.625,30.564z M20.524,30.533L2,48.355V11.923L20.524,30.533z   M21.934,31.95l5.523,5.549c0.709,0.661,1.619,0.993,2.533,0.993c0.923,0,1.85-0.339,2.581-1.02l5.496-5.522L56.304,49.5H3.686  L21.934,31.95z M39.477,30.534L58,11.922v36.433L39.477,30.534z"
+                        fill="#fff" />
+                </svg>
+            </a>
+        </li>
+        <li class="w-1/5 flex items-center justify-center">
+            <a href="/login" class="hover:text-gray-900">
+                {{-- @if (isset($_SESSION['customer']))
+                        マイページ
+                    @else
+                        ログイン
+                    @endif --}}
+                <svg class="fill-a_text w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.641 19.582">
+                    <g transform="translate(3070.06 748.472)">
+                        <path class=""
+                            d="M-3062.4-748.472h0a4.107,4.107,0,0,1,4.1,4.1,4.11,4.11,0,0,1-4.1,4.106,4.108,4.108,0,0,1-4.1-4.1,4.076,4.076,0,0,1,1.2-2.9A4.076,4.076,0,0,1-3062.4-748.472Zm0,6.707a2.607,2.607,0,0,0,2.6-2.6,2.605,2.605,0,0,0-2.6-2.6v0a2.586,2.586,0,0,0-1.843.763,2.585,2.585,0,0,0-.762,1.841A2.606,2.606,0,0,0-3062.4-741.765Z"
+                            transform="translate(-0.341)" fill="#fff" />
+                        <path class=""
+                            d="M-3056.169-727.871a.75.75,0,0,1-.75-.75c0-4.259-2.611-7.723-5.82-7.723s-5.821,3.465-5.821,7.723a.75.75,0,0,1-.75.75.75.75,0,0,1-.75-.75,10.539,10.539,0,0,1,2.082-6.451,6.626,6.626,0,0,1,5.239-2.773,6.625,6.625,0,0,1,5.239,2.772,10.539,10.539,0,0,1,2.081,6.451A.75.75,0,0,1-3056.169-727.871Z"
+                            transform="translate(0 -1.019)" fill="#fff" />
+                    </g>
+                </svg>
+            </a>
+        </li>
+    </ul>
+@else
+    <button class="md:hidden w-8 h-[18px] ml-auto relative top-1/2 -translate-y-1/2 right-5" id="openMenuBtn">
+        <span class="absolute inline-block w-8 h-[2px] bg-white top-0"></span>
+        <span class="absolute inline-block w-8 h-[2px] bg-white top-2"></span>
+        <span class="absolute inline-block w-8 h-[2px] bg-white top-4"></span>
+    </button>
+@endif
+</header>
+
+<div class="modal hidden fixed top-0 left-0 h-screen w-full bg-gray-700 opacity-90 z-30">
+    <button class="absolute right-5 top-5" id="closeBtn">
+        <span class="absolute top-0 right-0 inline-block w-8 h-[2px] bg-white rotate-45"></span>
+        <span class="absolute top-0 right-0 inline-block w-8 h-[2px] bg-white -rotate-45"></span>
+    </button>
+    <div class="py-20 px-10">
+        <form role="search" action="/products" method="GET" class="mb-10">
+            {{-- <input type="hidden" name="serchUrl" value="/products/search"> --}}
+            <div class="text-center">
+                <div class="relative inline-block">
+                    <input type="search" name="q" placeholder="商品を検索する"
+                        class="w-full md:w-40 pl-6 bg-transparent text-white border-b-2 border-gray-600 outline-none">
+                    <button type="submit" class="absolute left-2 top-1/2 -translate-y-1/2">
+                        <svg class="w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.955 18.956">
+                            <g transform="translate(-7553 147)">
+                                <path
+                                    d="M7.521,1.5a6.021,6.021,0,1,0,6.021,6.021A6.027,6.027,0,0,0,7.521,1.5m0-1.5A7.521,7.521,0,1,1,0,7.521,7.521,7.521,0,0,1,7.521,0Z"
+                                    transform="translate(7553 -147)" fill="#808080" />
+                                <path d="M5.486,6.547-.53.53.53-.53,6.547,5.486Z"
+                                    transform="translate(7565.409 -134.591)" fill="#fff" />
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <ul class="flex">
+            <li class="text-center mr-2">
+                <a href="/products?category_id=1" class="hover:opacity-80">
+                    <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_sake.jpg" alt="">
+                    <span class="text-white">日本酒</span>
+                </a>
+            </li>
+            <li class="text-center mr-2">
+                <a href="/products?category_id=2" class="hover:opacity-80">
+                    <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_beer.jpg" alt="">
+                    <span class="text-white">ビール</span>
+                </a>
+            </li>
+            <li class="text-center">
+                <a href="/products?category_id=3" class="hover:opacity-80">
+                    <img src="{{ App\consts\CommonConst::IMG_PATH }}/products/category_wine.jpg" alt="">
+                    <span class="text-white">ワイン</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<ul
+    class="sidebar hidden md:hidden fixed top-0 left-0 w-full min-h-screen flex-col py-20 px-5 bg-gray-700 opacity-90 z-30">
+    <button class="absolute w-6 h-6 right-6 top-5" id="closeMenuBtn">
+        <span class="absolute right-0 inline-block w-8 h-[2px] bg-white rotate-45"></span>
+        <span class="absolute right-0 inline-block w-8 h-[2px] bg-white -rotate-45"></span>
+    </button>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin" class="p-4 text-white hover:bg-gray-600">
+        <span>トップ</span>
+    </a>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin/admins/top" class="p-4 text-white hover:bg-gray-600">
+        <span>管理者情報</span>
+    </a>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin/customers/top" class="p-4 text-white hover:bg-gray-600">
+        <span>顧客管理</span>
+    </a>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin/products/top" class="p-4 text-white hover:bg-gray-600">
+        <span>商品管理</span>
+    </a>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin/orders/top" class="p-4 text-white hover:bg-gray-600">
+        <span>注文履歴</span>
+    </a>
+    <a href="{{ App\consts\CommonConst::APP_URL }}admin/contacts" class="p-4 text-white hover:bg-gray-600">
+        <span>お問い合わせ</span>
+    </a>
+</ul>

@@ -11,5 +11,12 @@
         "phpmd": "./vendor/bin/phpmd . text phpmd.xml --suffixes php --exclude vendor",
         "phpstan": "./vendor/bin/phpstan analyse -c phpstan.neon",
         "phpunit": "./vendor/bin/phpunit"
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "twig/twig": "^3.0",
+        "eftec/bladeone": "^4.8",
+        "phpmailer/phpmailer": "^6.7",
+        "stripe/stripe-php": "^10.6"
     }
 }

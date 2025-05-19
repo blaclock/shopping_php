@@ -1,2 +1,7 @@
 docker/db/mysql_data
-src/vendor
+# src/vendor
+# src/.env
+src/App/logs
+src/resources/cache
+src/resources/img
+DB設定.sql
