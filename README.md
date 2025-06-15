@@ -1,9 +1,4 @@
-# Part 8： フルスクラッチでWebアプリケーション
-
-## 目的
-
-* フルスクラッチでアプリケーションを作成する
-* Webアプリケーションの仕組みの理解を深める
+# PHP で Web アプリケーションをスクラッチ開発
 
 ## 環境構築
 
@@ -21,7 +16,7 @@ docker-compose exec app php -v
 docker-compose down
 ```
 
-## 環境構築 (Remote Development編)
+## 環境構築 (Remote Development 編)
 
 Docker イメージをビルドする。
 
